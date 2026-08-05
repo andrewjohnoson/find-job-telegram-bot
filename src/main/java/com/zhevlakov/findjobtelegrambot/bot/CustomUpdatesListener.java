@@ -11,7 +11,9 @@ public class CustomUpdatesListener implements UpdatesListener {
 
     private final UpdateHandler updateHandler;
 
-    public CustomUpdatesListener(UpdateHandler updateHandler) {
+    public CustomUpdatesListener(
+            UpdateHandler updateHandler
+    ) {
         this.updateHandler = updateHandler;
     }
 

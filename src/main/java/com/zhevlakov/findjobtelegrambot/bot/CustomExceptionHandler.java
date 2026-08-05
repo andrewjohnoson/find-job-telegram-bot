@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomUpdatesListenerExceptionHandler implements ExceptionHandler {
-    private final Logger log = LoggerFactory.getLogger(CustomUpdatesListenerExceptionHandler.class);
+public class CustomExceptionHandler implements ExceptionHandler {
+    private final Logger log = LoggerFactory.getLogger(CustomExceptionHandler.class);
 
     @Override
     public void onException(TelegramException e) {
