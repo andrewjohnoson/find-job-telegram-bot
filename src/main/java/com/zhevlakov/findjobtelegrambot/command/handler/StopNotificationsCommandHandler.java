@@ -4,7 +4,9 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
+import org.springframework.stereotype.Component;
 
+@Component
 public class StopNotificationsCommandHandler implements CommandHandler {
 
     @Override
