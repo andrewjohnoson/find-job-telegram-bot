@@ -11,7 +11,7 @@ import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StartCommandHandlerHandler implements CommandHandler {
+public class StartCommandHandler implements CommandHandler {
     private final static String TEXT_RESPONSE = """
                 Привет %s. Я бот, который помогает искать работу.
             

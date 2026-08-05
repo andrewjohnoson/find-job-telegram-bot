@@ -1,4 +1,4 @@
-package com.zhevlakov.findjobtelegrambot;
+package com.zhevlakov.findjobtelegrambot.bot;
 
 import com.pengrad.telegrambot.TelegramBot;
 import org.springframework.beans.factory.annotation.Value;

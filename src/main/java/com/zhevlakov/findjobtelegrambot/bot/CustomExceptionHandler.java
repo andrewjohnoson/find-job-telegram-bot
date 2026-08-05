@@ -1,4 +1,4 @@
-package com.zhevlakov.findjobtelegrambot;
+package com.zhevlakov.findjobtelegrambot.bot;
 
 import com.pengrad.telegrambot.ExceptionHandler;
 import com.pengrad.telegrambot.TelegramException;

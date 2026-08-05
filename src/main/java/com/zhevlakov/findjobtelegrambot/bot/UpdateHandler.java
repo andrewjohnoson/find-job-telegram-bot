@@ -1,6 +1,7 @@
-package com.zhevlakov.findjobtelegrambot;
+package com.zhevlakov.findjobtelegrambot.bot;
 
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.AbstractSendRequest;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.zhevlakov.findjobtelegrambot.command.CommandDispatcher;
 import org.slf4j.Logger;
@@ -23,20 +24,23 @@ public class UpdateHandler {
 
     public void handleUpdate(Update update) {
         try {
-            process(update);
+            var request = process(update);
+            senderService.sendMessage(request);
         } catch (Exception e) {
             log.info("Во время работы произошла ошибка", e);
             sendUserErrorMessage(update.message().chat().id());
         }
     }
 
-    public void process(Update update) {
+    public AbstractSendRequest<?> process(Update update) {
         if (update.message() != null) {
             var message = update.message();
-            if (message.text().startsWith("/")) {
-                commandDispatcher.processCommand(message);
+            if (commandDispatcher.isCommand(message)) {
+                return commandDispatcher.processCommand(message);
             }
         }
+
+        return null;
     }
 
     private void sendUserErrorMessage(Long userId) {

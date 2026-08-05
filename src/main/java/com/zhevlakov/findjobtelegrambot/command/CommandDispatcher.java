@@ -1,6 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.command;
 
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.request.AbstractSendRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class CommandDispatcher {
-    private Map<String, CommandHandler> commandHandlersMap;
+    private final Map<String, CommandHandler> commandHandlersMap;
 
     @Autowired
     public CommandDispatcher(
@@ -27,14 +28,17 @@ public class CommandDispatcher {
                 ));
     }
 
-    public void processCommand(Message message) {
+    public AbstractSendRequest<?> processCommand(Message message) {
         var commandValue = message.text();
         var commandHandler = commandHandlersMap.get(commandValue);
         if (commandHandler == null) {
             throw new IllegalArgumentException("Такой комманды нет в списке.");
         }
-        commandHandler.handle(message);
 
+        return commandHandler.handle(message);
+    }
 
+    public boolean isCommand(Message message) {
+        return message.text() != null && commandHandlersMap.containsKey(message.text());
     }
 }

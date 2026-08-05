@@ -1,4 +1,4 @@
-package com.zhevlakov.findjobtelegrambot;
+package com.zhevlakov.findjobtelegrambot.bot;
 
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
