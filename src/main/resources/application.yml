@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: ${POSTGRES_JDBC_URL:jdbc:postgresql://localhost:5433/postgres}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  config:
+#    Optional: if exists, we use it, else app doesn't crash
+#    file:.env points that spring should search it into the root of project
+#    [.properties] makes spring process syntax like default .properties
+    import: "optional:file:.env[.properties]"
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+bot:
+  api:
+    token: ${BOT_TOKEN}
