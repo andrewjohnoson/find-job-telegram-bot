@@ -1,10 +1,8 @@
 package com.zhevlakov.findjobtelegrambot.command;
 
-import lombok.Getter;
-
-@Getter
 public enum CommandHandlerName {
     START("/start"),
+    CANCEL("/cancel"),
     NEW_QUERY("Новый запрос"),
     FAVOURITE("Избранное"),
     STOP_NOTIFICATIONS("Перестать искать");
@@ -13,5 +11,9 @@ public enum CommandHandlerName {
 
     CommandHandlerName(String commandName) {
         this.commandName = commandName;
+    }
+
+    public String getCommandName() {
+        return commandName;
     }
 }

@@ -1,5 +1,6 @@
 package com.zhevlakov.findjobtelegrambot.fsm.handler;
 
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
 import com.zhevlakov.findjobtelegrambot.fsm.FsmStates;
@@ -11,9 +12,14 @@ import org.springframework.stereotype.Component;
 public class AskPositionFsmHandler implements FsmHandler {
     @Override
     public AbstractSendRequest<?> handle(
-            Update update,
-            UserEntity userEntity
+            Message message,
+            UserEntity user
     ) {
+        return null;
+    }
+
+    @Override
+    public AbstractSendRequest<?> changeStateAndSendRequest(UserEntity user) {
         return null;
     }
 

@@ -2,15 +2,9 @@ package com.zhevlakov.findjobtelegrambot.user;
 
 import com.zhevlakov.findjobtelegrambot.fsm.FsmStates;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Table(name = "user")
-@Getter
-@Setter
-@NoArgsConstructor
+@Table(name = "users")
 public class UserEntity {
     @Id
     @Column(name = "chat_id")
@@ -23,12 +17,10 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private FsmStates state;
 
-    @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private UserRequest userRequest;
 
-    public void setUserRequest(UserRequest userRequest) {
-        this.userRequest = userRequest;
-        userRequest.setUserEntity(this);
+    public UserEntity() {
     }
 
     public UserEntity(
@@ -41,5 +33,40 @@ public class UserEntity {
         this.userTag = userTag;
         this.state = state;
         this.userRequest = userRequest;
+    }
+
+    public void setUserRequest(UserRequest userRequest) {
+        this.userRequest = userRequest;
+        userRequest.setUserEntity(this);
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
+    }
+
+    public void setUserTag(String userTag) {
+        this.userTag = userTag;
+    }
+
+    public void setState(FsmStates state) {
+        this.state = state;
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public String getUserTag() {
+        return userTag;
+    }
+
+    public FsmStates getState() {
+        return state;
+    }
+
+
+
+    public UserRequest getUserRequest() {
+        return userRequest;
     }
 }

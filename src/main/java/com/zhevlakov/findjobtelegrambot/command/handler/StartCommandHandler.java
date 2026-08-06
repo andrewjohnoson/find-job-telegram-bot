@@ -1,13 +1,12 @@
 package com.zhevlakov.findjobtelegrambot.command.handler;
 
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.request.Keyboard;
-import com.pengrad.telegrambot.model.request.KeyboardButton;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.zhevlakov.findjobtelegrambot.KeyboardGenerator;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
+import com.zhevlakov.findjobtelegrambot.user.UserService;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,22 +18,28 @@ public class StartCommandHandler implements CommandHandler {
             
             Ты можешь задать запрос на поиск вакансий, посмотреть в Избранном те, которые ты отметил, а также перестать получать уведомления.
             """;
+    private final UserService userService;
+    private final KeyboardGenerator keyboardGenerator;
+
+    public StartCommandHandler(UserService userService,
+                               KeyboardGenerator keyboardGenerator
+    ) {
+        this.userService = userService;
+        this.keyboardGenerator = keyboardGenerator;
+    }
 
     @Override
     public AbstractSendRequest<?> handle(Message message) {
-        Long chatId = message.chat().id();
-        String userName = message.from().username();
-        AbstractSendRequest<SendMessage> request = new SendMessage(chatId, TEXT_RESPONSE.formatted(userName));
+        var chatId = message.chat().id();
+        if (userService.haveUser(chatId) && !userService.isUserFree(chatId)) {
+            return new SendMessage(chatId, "Данная операция в данный момент не доступна.");
+        }
 
-        KeyboardButton[] buttons = {
-                new KeyboardButton("Новый запрос"),
-                new KeyboardButton("Избранное"),
-                new KeyboardButton("Перестать искать")
-        };
+        var userTag = message.from().username();
+        var user = userService.createNewUser(chatId, userTag);
 
-        Keyboard replyKeyboardMarkup = new ReplyKeyboardMarkup(buttons).resizeKeyboard(true);
-        request.replyMarkup(replyKeyboardMarkup);
-
+        AbstractSendRequest<SendMessage> request = new SendMessage(user.getChatId(), TEXT_RESPONSE.formatted(user.getUserTag()));
+        request.replyMarkup(keyboardGenerator.getStartCommandKeyboard());
         return request;
     }
 
