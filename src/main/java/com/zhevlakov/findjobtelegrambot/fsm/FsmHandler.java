@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface FsmHandler {
     AbstractSendRequest<?> handle(Message message, UserEntity user);
-    AbstractSendRequest<?> changeStateAndSendRequest(UserEntity user);
+    UserEntity changeState(UserEntity user);
     FsmStates getState();
 }

@@ -1,10 +1,11 @@
-package com.zhevlakov.findjobtelegrambot.user;
+package com.zhevlakov.findjobtelegrambot.user.query;
 
+import com.zhevlakov.findjobtelegrambot.user.UserEntity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "user_request")
-public class UserRequest {
+@Table(name = "user_query")
+public class UserQuery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,10 +32,10 @@ public class UserRequest {
     @JoinColumn(name = "user_chat_id", referencedColumnName = "chat_id")
     private UserEntity userEntity;
 
-    public UserRequest() {
+    public UserQuery() {
     }
 
-    public UserRequest(
+    public UserQuery(
             Long id,
             String position,
             String experience,

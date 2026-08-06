@@ -1,6 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.user;
 
 import com.zhevlakov.findjobtelegrambot.fsm.FsmStates;
+import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,7 +19,7 @@ public class UserEntity {
     private FsmStates state;
 
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
-    private UserRequest userRequest;
+    private UserQuery userQuery;
 
     public UserEntity() {
     }
@@ -27,17 +28,17 @@ public class UserEntity {
             Long chatId,
             String userTag,
             FsmStates state,
-            UserRequest userRequest
+            UserQuery userQuery
     ) {
         this.chatId = chatId;
         this.userTag = userTag;
         this.state = state;
-        this.userRequest = userRequest;
+        this.userQuery = userQuery;
     }
 
-    public void setUserRequest(UserRequest userRequest) {
-        this.userRequest = userRequest;
-        userRequest.setUserEntity(this);
+    public void setUserRequest(UserQuery userQuery) {
+        this.userQuery = userQuery;
+        userQuery.setUserEntity(this);
     }
 
     public void setChatId(Long chatId) {
@@ -66,7 +67,7 @@ public class UserEntity {
 
 
 
-    public UserRequest getUserRequest() {
-        return userRequest;
+    public UserQuery getUserRequest() {
+        return userQuery;
     }
 }
