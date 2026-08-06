@@ -7,5 +7,5 @@ public enum FsmStates {
     ASK_CITY,
     ASK_WORK_FORMAT,
     ASK_SALARY,
-    ASK_TYPE
+    ASK_EMPLOYMENT_TYPE
 }

@@ -8,7 +8,7 @@ import com.zhevlakov.findjobtelegrambot.user.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmploymentTypeFsmHandler implements FsmHandler {
+public class AskEmploymentTypeFsmHandler implements FsmHandler {
     @Override
     public AbstractSendRequest<?> handle(
             Message message,
