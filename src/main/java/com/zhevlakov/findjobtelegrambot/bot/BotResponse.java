@@ -11,7 +11,7 @@ public record BotResponse(
         return new BotResponse(chatId, text, null);
     }
 
-    public static BotResponse postWithReplyKeyboard(Long chatId, String text, Keyboard replyKeyboard) {
+    public static BotResponse post(Long chatId, String text, Keyboard replyKeyboard) {
         return new BotResponse(chatId, text, replyKeyboard);
     }
 

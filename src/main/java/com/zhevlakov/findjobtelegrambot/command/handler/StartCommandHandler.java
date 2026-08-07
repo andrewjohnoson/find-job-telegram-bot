@@ -37,7 +37,7 @@ public class StartCommandHandler implements CommandHandler {
         var userTag = message.from().username();
         var user = userService.createNewUser(chatId, userTag);
 
-        return BotResponse.postWithReplyKeyboard(user.getChatId(), TEXT_RESPONSE.formatted(user.getUserTag()),
+        return BotResponse.post(user.getChatId(), TEXT_RESPONSE.formatted(user.getUserTag()),
                 keyboardGenerator.getStartCommandKeyboard());
     }
 
