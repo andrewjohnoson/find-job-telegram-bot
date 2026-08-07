@@ -12,7 +12,7 @@ public class UserQueryService {
     }
 
     public UserQuery getById(Long chatId) {
-        return userQueryRepository.findById(chatId)
+        return userQueryRepository.findByUserEntity_ChatId(chatId)
                 .orElseThrow(() -> new EntityNotFoundException("Нет элемента с chatId=" + chatId));
     }
 

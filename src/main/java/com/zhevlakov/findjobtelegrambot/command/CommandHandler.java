@@ -1,9 +1,9 @@
 package com.zhevlakov.findjobtelegrambot.command;
 
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.request.AbstractSendRequest;
+import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 
 public interface CommandHandler {
-    AbstractSendRequest<?> handle(Message message); // заменить войд на какой-то класс ответа
+    BotResponse handle(Message message); // заменить войд на какой-то класс ответа
     CommandHandlerName getCommandHandlerName();
 }

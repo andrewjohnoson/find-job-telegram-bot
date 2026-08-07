@@ -1,7 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.command.handler;
 
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.request.AbstractSendRequest;
+import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FavouriteCommandHandler implements CommandHandler {
     @Override
-    public AbstractSendRequest<?> handle(Message message) {
+    public BotResponse handle(Message message) {
         return null;
     }
 

@@ -1,46 +1,25 @@
 package com.zhevlakov.findjobtelegrambot.fsm;
 
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.request.AbstractSendRequest;
-import com.zhevlakov.findjobtelegrambot.user.UserService;
+import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 @Component
 public class FsmDispatcher {
-    private final UserService userService;
-    private final Map<FsmStates, FsmHandler> fsmHandlerMap;
+    private final QueryFsmWizardService wizardService;
 
     @Autowired
     public FsmDispatcher(
-            UserService userService,
-            List<FsmHandler> fsmHandlers
+            QueryFsmWizardService wizardService
     ) {
-        this.userService = userService;
-        this.fsmHandlerMap = fsmHandlers.stream()
-                .collect(Collectors.toMap(
-                        FsmHandler::getState,
-                        Function.identity(),
-                        (existing, replacement) -> existing,
-                        HashMap::new
-                ));
+        this.wizardService = wizardService;
     }
 
-    public AbstractSendRequest<?> processFsmCommand(Message message) {
+    public BotResponse processFsmCommand(Message message) {
         var chatId = message.chat().id();
-        var user = userService.getUserById(chatId);
-        var status = user.getState();
-        var fsmHandler = fsmHandlerMap.get(status);
-        if (fsmHandler == null) {
-            throw new IllegalArgumentException("Такой комманды нет в списке.");
-        }
+        String input = message.text();
 
-        return fsmHandler.handle(message, user);
+        return wizardService.processStep(chatId, input);
     }
 }

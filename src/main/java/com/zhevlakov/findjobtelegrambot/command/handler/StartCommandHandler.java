@@ -1,9 +1,8 @@
 package com.zhevlakov.findjobtelegrambot.command.handler;
 
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.request.AbstractSendRequest;
-import com.pengrad.telegrambot.request.SendMessage;
 import com.zhevlakov.findjobtelegrambot.KeyboardGenerator;
+import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
 import com.zhevlakov.findjobtelegrambot.user.UserService;
@@ -29,18 +28,17 @@ public class StartCommandHandler implements CommandHandler {
     }
 
     @Override
-    public AbstractSendRequest<?> handle(Message message) {
+    public BotResponse handle(Message message) {
         var chatId = message.chat().id();
         if (userService.haveUser(chatId) && !userService.isUserFree(chatId)) {
-            return new SendMessage(chatId, "Данная операция в данный момент не доступна.");
+            return BotResponse.error(chatId, "Данная операция в данный момент не доступна.");
         }
 
         var userTag = message.from().username();
         var user = userService.createNewUser(chatId, userTag);
 
-        AbstractSendRequest<SendMessage> request = new SendMessage(user.getChatId(), TEXT_RESPONSE.formatted(user.getUserTag()));
-        request.replyMarkup(keyboardGenerator.getStartCommandKeyboard());
-        return request;
+        return BotResponse.postWithReplyKeyboard(user.getChatId(), TEXT_RESPONSE.formatted(user.getUserTag()),
+                keyboardGenerator.getStartCommandKeyboard());
     }
 
     @Override

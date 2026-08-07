@@ -18,6 +18,7 @@ public class UpdateHandler {
     private final MessageSenderService senderService;
     private final UserService userService;
     private final FsmDispatcher fsmDispatcher;
+    private final BotResponseMapper responseMapper;
     private final Logger log = LoggerFactory.getLogger(UpdateHandler.class);
 
     public UpdateHandler(
@@ -25,18 +26,21 @@ public class UpdateHandler {
             CallbackDispatcher callbackDispatcher,
             MessageSenderService senderService,
             UserService userService,
-            FsmDispatcher fsmDispatcher
+            FsmDispatcher fsmDispatcher,
+            BotResponseMapper responseMapper
     ) {
         this.commandDispatcher = commandDispatcher;
         this.callbackDispatcher = callbackDispatcher;
         this.senderService = senderService;
         this.userService = userService;
         this.fsmDispatcher = fsmDispatcher;
+        this.responseMapper = responseMapper;
     }
 
     public void handleUpdate(Update update) {
         try {
-            var request = process(update);
+            var botResponse = process(update);
+            var request = responseMapper.toRequest(botResponse);
             senderService.sendMessage(request);
         } catch (Exception e) {
             log.info("Во время работы произошла ошибка", e);
@@ -44,7 +48,7 @@ public class UpdateHandler {
         }
     }
 
-    public AbstractSendRequest<?> process(Update update) {
+    public BotResponse process(Update update) {
         if (update.message() != null) {
             var message = update.message();
             var chatId = message.chat().id();

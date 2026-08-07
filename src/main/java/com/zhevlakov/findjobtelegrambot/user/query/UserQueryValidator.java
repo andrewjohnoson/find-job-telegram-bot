@@ -21,4 +21,8 @@ public class UserQueryValidator {
             return false;
         }
     }
+
+    public boolean isSalary(String s) {
+        return true;
+    }
 }

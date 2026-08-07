@@ -37,13 +37,6 @@ public class UserService {
     }
 
     public UserEntity updateUser(UserEntity user) {
-        UserEntity updatedUser = new UserEntity(
-                user.getChatId(),
-                user.getUserTag(),
-                user.getState(),
-                user.getUserRequest()
-        );
-
-        return userRepository.save(updatedUser);
+        return userRepository.save(user);
     }
 }

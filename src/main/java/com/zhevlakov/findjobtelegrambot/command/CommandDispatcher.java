@@ -1,8 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.command;
 
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.request.AbstractSendRequest;
-import com.pengrad.telegrambot.request.SendMessage;
+import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,13 +32,13 @@ public class CommandDispatcher {
         this.userService = userService;
     }
 
-    public AbstractSendRequest<?> processCommand(Message message) {
+    public BotResponse processCommand(Message message) {
         var chatId = message.chat().id();
         var commandValue = message.text();
 
         if (!userService.haveUser(chatId)
                 && !commandValue.equals(CommandHandlerName.START.getCommandName())) {
-            return new SendMessage(chatId, "Данная операция в данный момент не доступна.");
+            return BotResponse.error(chatId, "Данная операция в данный момент не доступна.");
         }
 
         var commandHandler = commandHandlersMap.get(commandValue);

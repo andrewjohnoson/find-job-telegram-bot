@@ -13,7 +13,8 @@ public class TelegramMessageSenderService implements MessageSenderService {
     private final Logger log = LoggerFactory.getLogger(TelegramMessageSenderService.class);
 
     public TelegramMessageSenderService(
-            TelegramBot bot
+            TelegramBot bot,
+            BotResponseMapper responseMapper
     ) {
         this.bot = bot;
     }
