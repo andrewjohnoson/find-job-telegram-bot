@@ -44,12 +44,8 @@ public class AskWorkFormatFsmStep implements FsmStep {
     }
 
     @Override
-    public List<KeyboardButtonContent> keyboardButtonsNames() {
-        return List.of(new KeyboardButtonContent("На месте работодателя", ButtonCode.FIRST_BUTTON),
-                new KeyboardButtonContent("Удалённо", ButtonCode.SECOND_BUTTON),
-                new KeyboardButtonContent("Гибрид", ButtonCode.THIRD_BUTTON),
-                new KeyboardButtonContent("Продолжить", ButtonCode.FOURTH_BUTTON)
-                );
+    public List<KeyboardButtonContent> nextKeyboardButtons() {
+        return null;
     }
 
     @Override

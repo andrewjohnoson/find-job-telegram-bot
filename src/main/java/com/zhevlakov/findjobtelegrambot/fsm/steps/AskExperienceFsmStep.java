@@ -43,13 +43,12 @@ public class AskExperienceFsmStep implements FsmStep {
     }
 
     @Override
-    public List<KeyboardButtonContent> keyboardButtonsNames() {
+    public List<KeyboardButtonContent> nextKeyboardButtons() {
         return List.of(
-                new KeyboardButtonContent("Без опыта", ButtonCode.FIRST_BUTTON),
-                new KeyboardButtonContent("1-3 года", ButtonCode.SECOND_BUTTON),
-                new KeyboardButtonContent("3-6 лет", ButtonCode.THIRD_BUTTON),
-                new KeyboardButtonContent("Более 6 лет", ButtonCode.FOURTH_BUTTON),
-                new KeyboardButtonContent("Продолжить", ButtonCode.FIFTH_BUTTON)
+                new KeyboardButtonContent("На месте работодателя", "in_person"),
+                new KeyboardButtonContent("Удалённо", "remote"),
+                new KeyboardButtonContent("Гибрид", "hybrid"),
+                new KeyboardButtonContent("Продолжить", "next")
         );
     }
 

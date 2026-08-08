@@ -50,8 +50,14 @@ public class AskPositionFsmStep implements FsmStep {
     }
 
     @Override
-    public List<KeyboardButtonContent> keyboardButtonsNames() {
-        return null;
+    public List<KeyboardButtonContent> nextKeyboardButtons() {
+        return List.of(
+                new KeyboardButtonContent("Без опыта", "0"),
+                new KeyboardButtonContent("1-3 года", "1_3"),
+                new KeyboardButtonContent("3-6 лет", "3_6"),
+                new KeyboardButtonContent("Более 6 лет", "6_more"),
+                new KeyboardButtonContent("Продолжить", "next")
+        );
     }
 
     @Override

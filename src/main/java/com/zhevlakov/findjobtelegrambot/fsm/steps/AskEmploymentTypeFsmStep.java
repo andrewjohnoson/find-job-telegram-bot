@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 public class AskEmploymentTypeFsmStep implements FsmStep {
     @Override
     public String nextResponseMessage() {
-        return null;
+        return "Ввод запроса завершён.";
     }
 
     @Override
@@ -19,7 +19,7 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
             UserQuery query,
             String input
     ) {
-        query.setWorkFormat(input);
+        query.setEmploymentType(input);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
 
     @Override
     public FsmStates nextState() {
-        return null;
+        return FsmStates.FREE;
     }
 
     @Override
@@ -43,13 +43,8 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
     }
 
     @Override
-    public List<KeyboardButtonContent> keyboardButtonsNames() {
-        return List.of(
-                new KeyboardButtonContent("Полная занятость", ButtonCode.FIRST_BUTTON),
-                new KeyboardButtonContent("Частичная занятость", ButtonCode.SECOND_BUTTON),
-                new KeyboardButtonContent("Стажировка", ButtonCode.THIRD_BUTTON),
-                new KeyboardButtonContent("Продолжить", ButtonCode.FOURTH_BUTTON)
-        );
+    public List<KeyboardButtonContent> nextKeyboardButtons() {
+        return null;
     }
 
     @Override

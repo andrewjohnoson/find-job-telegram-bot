@@ -50,7 +50,7 @@ public class AskCityFsmStep implements FsmStep {
     }
 
     @Override
-    public List<KeyboardButtonContent> keyboardButtonsNames() {
+    public List<KeyboardButtonContent> nextKeyboardButtons() {
         return null;
     }
 

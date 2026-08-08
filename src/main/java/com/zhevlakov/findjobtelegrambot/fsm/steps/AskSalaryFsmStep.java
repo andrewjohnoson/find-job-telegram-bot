@@ -43,8 +43,13 @@ public class AskSalaryFsmStep implements FsmStep {
     }
 
     @Override
-    public List<KeyboardButtonContent> keyboardButtonsNames() {
-        return null;
+    public List<KeyboardButtonContent> nextKeyboardButtons() {
+        return List.of(
+                new KeyboardButtonContent("Полная занятость", "full"),
+                new KeyboardButtonContent("Частичная занятость", "part"),
+                new KeyboardButtonContent("Стажировка", "train"),
+                new KeyboardButtonContent("Продолжить", "next")
+        );
     }
 
     @Override

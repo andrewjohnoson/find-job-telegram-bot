@@ -20,6 +20,6 @@ public class FsmDispatcher {
         var chatId = message.chat().id();
         String input = message.text();
 
-        return wizardService.processStep(chatId, input);
+        return wizardService.processUsualInput(chatId, input);
     }
 }

@@ -1,6 +1,8 @@
 package com.zhevlakov.findjobtelegrambot.bot;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.DeleteWebhook;
+import com.pengrad.telegrambot.request.GetUpdates;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -23,6 +25,9 @@ public class TelegramBotInitializer {
 
     @EventListener(ApplicationReadyEvent.class)
     public void linkHandlers() {
+
+        bot.execute(new DeleteWebhook().dropPendingUpdates(true));
+
         bot.setUpdatesListener(updatesListener, exceptionHandler);
     }
 }

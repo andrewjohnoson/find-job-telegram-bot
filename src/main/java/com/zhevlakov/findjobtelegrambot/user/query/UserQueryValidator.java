@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 public class UserQueryValidator {
 
     public boolean isPosition(String position) {
-        return !position.contains("0123456789");
+        return position.matches("^(\\D*)$");
     }
 
     public boolean isCity(String city) {

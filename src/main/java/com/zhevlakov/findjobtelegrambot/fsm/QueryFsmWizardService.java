@@ -1,6 +1,5 @@
 package com.zhevlakov.findjobtelegrambot.fsm;
 
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.zhevlakov.findjobtelegrambot.KeyboardGenerator;
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.user.UserEntity;
@@ -37,7 +36,7 @@ public class QueryFsmWizardService {
                 .collect(Collectors.toMap(
                         FsmStep::currentState,
                         Function.identity(),
-                        (existing, replacement) -> existing,
+                        (existing, _) -> existing,
                         HashMap::new
                 ));
         this.userService = userService;
@@ -56,6 +55,16 @@ public class QueryFsmWizardService {
 
         userService.updateUser(user);
         return BotResponse.post(chatId, "Введите должность:");
+    }
+
+    @Transactional
+    public BotResponse cancel(Long chatId) {
+        var user = userService.getUserById(chatId);
+        user.setState(FsmStates.FREE);
+        userService.updateUser(user);
+        var keyboard = keyboardGenerator.getStartCommandKeyboard();
+
+        return BotResponse.post(chatId, "Создание запроса отменено.", keyboard);
     }
 
     private FsmStep getCurrentStep(UserEntity user) {
@@ -112,7 +121,7 @@ public class QueryFsmWizardService {
     private BotResponse buildPost(UserEntity user, FsmStep step) {
         var keyboard = switch (step.inputType()) {
             case USUAL_TEXT -> keyboardGenerator.getKeepPrevStateKeyboard(user.getState().toString());
-            case REPLY_CHOICE -> new ReplyKeyboardMarkup("Some text");
+            case REPLY_CHOICE -> null;
             case INLINE_CHOICE -> keyboardGenerator.buildInlineKeyboard(step);
         };
 
