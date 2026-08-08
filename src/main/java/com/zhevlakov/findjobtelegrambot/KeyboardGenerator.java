@@ -4,6 +4,8 @@ import com.pengrad.telegrambot.model.request.*;
 import com.zhevlakov.findjobtelegrambot.fsm.FsmStep;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class KeyboardGenerator {
     public Keyboard getStartCommandKeyboard() {
@@ -18,10 +20,16 @@ public class KeyboardGenerator {
 
     public Keyboard getKeepPrevStateKeyboard(String data) {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Оставить прежним").callbackData("keepPrev_" + data));
+                new InlineKeyboardButton("Продолжить").callbackData("keepPrev:" + data));
     }
 
     public InlineKeyboardMarkup buildInlineKeyboard(FsmStep step) {
-
+        InlineKeyboardButton[] buttons = (InlineKeyboardButton[]) step.keyboardButtonsNames().stream()
+                .map(content ->
+                        new InlineKeyboardButton(content.name()).callbackData(
+                            step.inlineDataCode().getInlineButtonCode() + ":" + content.code()
+                        ))
+                .toArray();
+        return new InlineKeyboardMarkup(buttons);
     }
 }

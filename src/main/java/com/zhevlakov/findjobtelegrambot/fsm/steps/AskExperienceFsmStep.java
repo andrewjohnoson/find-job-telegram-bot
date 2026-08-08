@@ -52,4 +52,9 @@ public class AskExperienceFsmStep implements FsmStep {
                 new KeyboardButtonContent("Продолжить", ButtonCode.FIFTH_BUTTON)
         );
     }
+
+    @Override
+    public FsmStateCode inlineDataCode() {
+        return FsmStateCode.ASK_EXPERIENCE;
+    }
 }

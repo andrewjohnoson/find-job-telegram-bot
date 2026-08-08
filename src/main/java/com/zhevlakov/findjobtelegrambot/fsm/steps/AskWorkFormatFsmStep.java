@@ -51,4 +51,9 @@ public class AskWorkFormatFsmStep implements FsmStep {
                 new KeyboardButtonContent("Продолжить", ButtonCode.FOURTH_BUTTON)
                 );
     }
+
+    @Override
+    public FsmStateCode inlineDataCode() {
+        return FsmStateCode.ASK_WORK_FORMAT;
+    }
 }

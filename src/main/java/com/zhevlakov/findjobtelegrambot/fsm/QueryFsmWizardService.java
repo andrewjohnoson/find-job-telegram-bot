@@ -25,11 +25,13 @@ public class QueryFsmWizardService {
     private final Map<FsmStates, FsmStep> steps;
     private final UserService userService;
     private final UserQueryService queryService;
+    private final KeyboardGenerator keyboardGenerator;
 
     public QueryFsmWizardService(
             UserService userService,
             List<FsmStep> fsmStepList,
-            UserQueryService queryService
+            UserQueryService queryService,
+            KeyboardGenerator keyboardGenerator
     ) {
         this.steps = fsmStepList.stream()
                 .collect(Collectors.toMap(
@@ -40,6 +42,7 @@ public class QueryFsmWizardService {
                 ));
         this.userService = userService;
         this.queryService = queryService;
+        this.keyboardGenerator = keyboardGenerator;
     }
 
     @Transactional
@@ -55,32 +58,43 @@ public class QueryFsmWizardService {
         return BotResponse.post(chatId, "Введите должность:");
     }
 
-    public BotResponse processChoice(Long chatId, String value) {
-
-    }
-
-    private BotResponse buildPost(UserEntity user, FsmStep step) {
-        var keyboard = switch (step.inputType()) {
-            case USUAL_TEXT -> null;
-            case REPLY_CHOICE -> new ReplyKeyboardMarkup("Some text");
-            case INLINE_CHOICE -> KeyboardGenerator.buildInlineKeyboard(step);
-        };
-
-        return BotResponse.post(user.getChatId(), step.nextResponseMessage(), keyboard);
-    }
-
-    public BotResponse processStep(Long chatId, String input) {
-        var user = userService.getUserById(chatId);
-        var state = user.getState();
-        var step = steps.get(state);
-
-        if (step == null) {
-            log.error("Неверное состояние={}", state);
-            return BotResponse.error(chatId, "Нету такого обработчика.");
+    private FsmStep getCurrentStep(UserEntity user) {
+        var userState = user.getState();
+        FsmStep currentStep = steps.get(userState);
+        if (currentStep == null) {
+            log.error("Нет шага с таким состоянием = {}", userState.toString());
+            throw new IllegalStateException("Нет такого состояния.");
         }
 
+        return currentStep;
+    }
+
+    @Transactional
+    public BotResponse processUsualInput(Long chatId, String input) {
+        var user = userService.getUserById(chatId);
+        var step = getCurrentStep(user);
+
+        if (step.inputType().equals(InputType.INLINE_CHOICE)) {
+            log.error("Пользователь вводит текст, когда нужно выбирать вариант ответа.");
+            return BotResponse.error(chatId, "Необходимо выбрать вариант ответа.");
+        }
+
+        return applyInput(user, step, input);
+    }
+
+    @Transactional
+    public BotResponse processChoice(Long chatId, String value) {
+        var user = userService.getUserById(chatId);
+        var step = getCurrentStep(user);
+
+        return applyInput(user, step, value);
+    }
+
+    private BotResponse applyInput(UserEntity user, FsmStep step, String input) {
+        var chatId = user.getChatId();
+
         if (step.validator() != null && !step.validator().test(input)) {
-            log.error("Введены невалидные данные={} при обработке в состоянии={}", input, state);
+            log.error("Введены невалидные данные={} при обработке в состоянии={}", input, user.getState());
             return BotResponse.error(chatId, "Введены невалидные данные.");
         }
 
@@ -91,8 +105,17 @@ public class QueryFsmWizardService {
 
         queryService.updateQuery(query);
         userService.updateUser(user);
+
+        return buildPost(user, step);
     }
 
+    private BotResponse buildPost(UserEntity user, FsmStep step) {
+        var keyboard = switch (step.inputType()) {
+            case USUAL_TEXT -> keyboardGenerator.getKeepPrevStateKeyboard(user.getState().toString());
+            case REPLY_CHOICE -> new ReplyKeyboardMarkup("Some text");
+            case INLINE_CHOICE -> keyboardGenerator.buildInlineKeyboard(step);
+        };
 
-
+        return BotResponse.post(user.getChatId(), step.nextResponseMessage(), keyboard);
+    }
 }

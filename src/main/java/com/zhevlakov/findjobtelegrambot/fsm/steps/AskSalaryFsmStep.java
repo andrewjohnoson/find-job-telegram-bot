@@ -1,9 +1,6 @@
 package com.zhevlakov.findjobtelegrambot.fsm.steps;
 
-import com.zhevlakov.findjobtelegrambot.fsm.FsmStates;
-import com.zhevlakov.findjobtelegrambot.fsm.FsmStep;
-import com.zhevlakov.findjobtelegrambot.fsm.InputType;
-import com.zhevlakov.findjobtelegrambot.fsm.KeyboardButtonContent;
+import com.zhevlakov.findjobtelegrambot.fsm.*;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +44,11 @@ public class AskSalaryFsmStep implements FsmStep {
 
     @Override
     public List<KeyboardButtonContent> keyboardButtonsNames() {
+        return null;
+    }
+
+    @Override
+    public FsmStateCode inlineDataCode() {
         return null;
     }
 }

@@ -15,4 +15,5 @@ public interface FsmStep {
     InputType inputType();
     Predicate<String> validator();
     List<KeyboardButtonContent> keyboardButtonsNames();
+    FsmStateCode inlineDataCode();
 }
