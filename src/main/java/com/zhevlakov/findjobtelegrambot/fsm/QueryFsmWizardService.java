@@ -1,6 +1,6 @@
 package com.zhevlakov.findjobtelegrambot.fsm;
 
-import com.zhevlakov.findjobtelegrambot.KeyboardGenerator;
+import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardGenerator;
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.user.UserEntity;
 import com.zhevlakov.findjobtelegrambot.user.UserService;
@@ -115,7 +115,9 @@ public class QueryFsmWizardService {
         queryService.updateQuery(query);
         userService.updateUser(user);
 
-        return buildPost(user, step);
+        var nextState = getCurrentStep(user);
+
+        return buildPost(user, nextState);
     }
 
     private BotResponse buildPost(UserEntity user, FsmStep step) {

@@ -1,5 +1,6 @@
 package com.zhevlakov.findjobtelegrambot.fsm;
 
+import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import org.springframework.stereotype.Component;
 

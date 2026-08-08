@@ -1,4 +1,4 @@
-package com.zhevlakov.findjobtelegrambot.fsm;
+package com.zhevlakov.findjobtelegrambot.keyboard;
 
 public record KeyboardButtonContent(
         String name,

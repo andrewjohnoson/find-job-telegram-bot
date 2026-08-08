@@ -1,11 +1,10 @@
 package com.zhevlakov.findjobtelegrambot.command.handler;
 
 import com.pengrad.telegrambot.model.Message;
-import com.zhevlakov.findjobtelegrambot.KeyboardGenerator;
+import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardGenerator;
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
-import com.zhevlakov.findjobtelegrambot.fsm.FsmStates;
 import com.zhevlakov.findjobtelegrambot.fsm.QueryFsmWizardService;
 import com.zhevlakov.findjobtelegrambot.user.UserService;
 import org.slf4j.Logger;

@@ -1,6 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.fsm.steps;
 
 import com.zhevlakov.findjobtelegrambot.fsm.*;
+import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import org.springframework.stereotype.Component;
 
@@ -45,9 +46,10 @@ public class AskExperienceFsmStep implements FsmStep {
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
         return List.of(
-                new KeyboardButtonContent("На месте работодателя", "in_person"),
-                new KeyboardButtonContent("Удалённо", "remote"),
-                new KeyboardButtonContent("Гибрид", "hybrid"),
+                new KeyboardButtonContent("Без опыта", "0"),
+                new KeyboardButtonContent("1-3 года", "1_3"),
+                new KeyboardButtonContent("3-6 лет", "3_6"),
+                new KeyboardButtonContent("Более 6 лет", "6_more"),
                 new KeyboardButtonContent("Продолжить", "next")
         );
     }

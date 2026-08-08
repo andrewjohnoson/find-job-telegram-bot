@@ -1,7 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.command.handler;
 
 import com.pengrad.telegrambot.model.Message;
-import com.zhevlakov.findjobtelegrambot.KeyboardGenerator;
+import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardGenerator;
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;

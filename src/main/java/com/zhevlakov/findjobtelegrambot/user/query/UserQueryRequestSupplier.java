@@ -2,7 +2,7 @@ package com.zhevlakov.findjobtelegrambot.user.query;
 
 import com.pengrad.telegrambot.request.AbstractSendRequest;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.zhevlakov.findjobtelegrambot.KeyboardGenerator;
+import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardGenerator;
 import com.zhevlakov.findjobtelegrambot.fsm.FsmStates;
 import com.zhevlakov.findjobtelegrambot.user.UserEntity;
 import org.springframework.stereotype.Component;
