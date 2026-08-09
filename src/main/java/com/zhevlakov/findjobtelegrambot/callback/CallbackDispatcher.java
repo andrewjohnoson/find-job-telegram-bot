@@ -1,12 +1,21 @@
 package com.zhevlakov.findjobtelegrambot.callback;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
-import com.pengrad.telegrambot.request.AbstractSendRequest;
+import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CallbackDispatcher {
-    public AbstractSendRequest<?> processCallback(CallbackQuery callback) {
+    private final CallbackMapper callbackMapper;
+
+    public CallbackDispatcher(
+            CallbackMapper callbackMapper
+    ) {
+        this.callbackMapper = callbackMapper;
+    }
+
+    public BotResponse processCallback(CallbackQuery callback) {
+        var callbackContent = callbackMapper.toContent(callback);
         return null;
     }
 }
