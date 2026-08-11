@@ -1,5 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.fsm.steps;
 
+import com.zhevlakov.findjobtelegrambot.callback.code.QueryCode;
+import com.zhevlakov.findjobtelegrambot.callback.code.WorkFormatCode;
 import com.zhevlakov.findjobtelegrambot.fsm.*;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
@@ -47,10 +49,10 @@ public class AskWorkFormatFsmStep implements FsmStep {
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
         return List.of(
-                new KeyboardButtonContent("На месте работодателя", "in_person"),
-                new KeyboardButtonContent("Удалённо", "remote"),
-                new KeyboardButtonContent("Гибрид", "hybrid"),
-                new KeyboardButtonContent("Продолжить", "next")
+                new KeyboardButtonContent(WorkFormatCode.IN_PERSON.getButtonText(), WorkFormatCode.IN_PERSON.getExpCode()),
+                new KeyboardButtonContent(WorkFormatCode.REMOTE.getButtonText(), WorkFormatCode.IN_PERSON.getExpCode()),
+                new KeyboardButtonContent(WorkFormatCode.HYBRID.getButtonText(), WorkFormatCode.HYBRID.getExpCode()),
+                new KeyboardButtonContent(QueryCode.NEXT.getButtonText(), QueryCode.NEXT.getExpCode())
         );
     }
 

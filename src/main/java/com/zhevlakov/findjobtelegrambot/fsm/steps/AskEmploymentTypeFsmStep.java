@@ -1,5 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.fsm.steps;
 
+import com.zhevlakov.findjobtelegrambot.callback.code.EmploymentTypeCode;
+import com.zhevlakov.findjobtelegrambot.callback.code.QueryCode;
 import com.zhevlakov.findjobtelegrambot.fsm.*;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
@@ -46,10 +48,10 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
         return List.of(
-                new KeyboardButtonContent("Полная занятость", "full"),
-                new KeyboardButtonContent("Частичная занятость", "part"),
-                new KeyboardButtonContent("Стажировка", "train"),
-                new KeyboardButtonContent("Продолжить", "next")
+                new KeyboardButtonContent(EmploymentTypeCode.FULL.getButtonText(), EmploymentTypeCode.FULL.getExpCode()),
+                new KeyboardButtonContent(EmploymentTypeCode.PART.getButtonText(), EmploymentTypeCode.PART.getExpCode()),
+                new KeyboardButtonContent(EmploymentTypeCode.TRAINEE.getButtonText(), EmploymentTypeCode.TRAINEE.getExpCode()),
+                new KeyboardButtonContent(QueryCode.NEXT.getButtonText(), QueryCode.NEXT.getExpCode())
         );
     }
 

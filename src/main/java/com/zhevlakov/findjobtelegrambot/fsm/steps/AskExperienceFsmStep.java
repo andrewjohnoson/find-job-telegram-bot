@@ -1,5 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.fsm.steps;
 
+import com.zhevlakov.findjobtelegrambot.callback.code.ExperienceCode;
+import com.zhevlakov.findjobtelegrambot.callback.code.QueryCode;
 import com.zhevlakov.findjobtelegrambot.fsm.*;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
@@ -46,11 +48,11 @@ public class AskExperienceFsmStep implements FsmStep {
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
         return List.of(
-                new KeyboardButtonContent("Без опыта", "0"),
-                new KeyboardButtonContent("1-3 года", "1_3"),
-                new KeyboardButtonContent("3-6 лет", "3_6"),
-                new KeyboardButtonContent("Более 6 лет", "6_more"),
-                new KeyboardButtonContent("Продолжить", "next")
+                new KeyboardButtonContent(ExperienceCode.NO_EXP.getButtonText(), ExperienceCode.NO_EXP.getExpCode()),
+                new KeyboardButtonContent(ExperienceCode.ONE_TO_THREE.getButtonText(), ExperienceCode.ONE_TO_THREE.getExpCode()),
+                new KeyboardButtonContent(ExperienceCode.THREE_TO_SIX.getButtonText(), ExperienceCode.THREE_TO_SIX.getExpCode()),
+                new KeyboardButtonContent(ExperienceCode.SIX_AND_MORE.getButtonText(), ExperienceCode.SIX_AND_MORE.getExpCode()),
+                new KeyboardButtonContent(QueryCode.NEXT.getButtonText(), QueryCode.NEXT.getExpCode())
         );
     }
 

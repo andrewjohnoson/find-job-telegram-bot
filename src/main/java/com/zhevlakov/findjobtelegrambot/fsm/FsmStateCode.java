@@ -3,7 +3,8 @@ package com.zhevlakov.findjobtelegrambot.fsm;
 public enum FsmStateCode {
     ASK_EMPLOYMENT("empl"),
     ASK_EXPERIENCE("exp"),
-    ASK_WORK_FORMAT("wft");
+    ASK_WORK_FORMAT("wft"),
+    NEXT("next");
 
     private final String inlineButtonCode;
 
