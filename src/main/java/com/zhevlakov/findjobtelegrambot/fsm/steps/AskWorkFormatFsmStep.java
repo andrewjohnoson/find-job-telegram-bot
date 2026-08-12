@@ -14,8 +14,8 @@ import java.util.function.Predicate;
 public class AskWorkFormatFsmStep implements FsmStep {
 
     @Override
-    public String nextResponseMessage() {
-        return "Введите желаемую з/п:";
+    public String responseMessage() {
+        return "Выберите формат работы";
     }
 
     @Override

@@ -38,8 +38,9 @@ public class CallbackDispatcher {
 
     public BotResponse processCallback(CallbackQuery callback) {
         var callbackContent = callbackMapper.toContent(callback);
+        log.info("processCallback, {}", callbackContent);
 
-        var handler = callbackHandlersMap.get(callbackContent.code());
+        var handler = callbackHandlersMap.get(callbackContent.queryStateCode());
         if (handler == null) {
             log.error("Нажата inline-кнопка, которой нет в списке допустимых комманд. Чат={}", callbackContent.chatId());
             return BotResponse.error(callbackContent.chatId(), "Не существует кнопки с таким кодом.");

@@ -58,7 +58,7 @@ public class QueryFsmWizardService {
         }
 
         userService.updateUser(user);
-        return BotResponse.post(chatId, "Введите должность:");
+        return buildPost(user);
     }
 
     @Transactional
@@ -85,6 +85,7 @@ public class QueryFsmWizardService {
     @Transactional
     public BotResponse processUsualInput(Long chatId, String input) {
         var user = userService.getUserById(chatId);
+
         var step = getCurrentStep(user);
 
         if (step.inputType().equals(InputType.INLINE_CHOICE)) {
@@ -98,14 +99,19 @@ public class QueryFsmWizardService {
     @Transactional
     public BotResponse processChoice(Long chatId, String input) {
         var user = userService.getUserById(chatId);
-        var step = getCurrentStep(user);
 
-        if (!userQueryValidator.canKeepPrevPosition(user, input)) {
-            log.error("В данный момент должность пользователя = {} не задана, поэтому не можем продолжить. chatId={}",
+//        if (user.getState().equals(FsmStates.FREE)) {
+//            log.warn("Пользователь = {} в чате = {} нажал inline-кнопку для запросов, когда запрос не создаётся.", user.getUserTag(), user.getChatId());
+//            return BotResponse.error(chatId, "В данный момент запрос не создаётся, поэтому данные кнопки не доступны.");
+//        }
+
+        if (!userQueryValidator.canKeepPrevPosition(user)) {
+            log.error("processChoice: В данный момент должность пользователя = {} не задана, поэтому не можем продолжить. chatId={}",
                     user.getUserTag(), user.getChatId());
             return BotResponse.error(user.getChatId(), "В данный момент должность не задана, поэтому нельзя продолжить.");
         }
 
+        var step = getCurrentStep(user);
         return applyInput(user, step, input);
     }
 
@@ -141,6 +147,6 @@ public class QueryFsmWizardService {
             case INLINE_CHOICE -> keyboardGenerator.buildInlineKeyboard(step);
         };
 
-        return BotResponse.post(user.getChatId(), step.nextResponseMessage(), keyboard);
+        return BotResponse.post(user.getChatId(), step.responseMessage(), keyboard, true);
     }
 }

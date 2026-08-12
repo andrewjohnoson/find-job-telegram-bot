@@ -11,8 +11,8 @@ import java.util.function.Predicate;
 @Component
 public class AskSalaryFsmStep implements FsmStep {
     @Override
-    public String nextResponseMessage() {
-        return "Выберите тип занятости";
+    public String responseMessage() {
+        return "Введите желаемую з/п:";
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.zhevlakov.findjobtelegrambot.bot;
 
+import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackDispatcher;
 import com.zhevlakov.findjobtelegrambot.command.CommandDispatcher;
@@ -14,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class UpdateHandler {
     private final CommandDispatcher commandDispatcher;
     private final CallbackDispatcher callbackDispatcher;
-    private final MessageSenderService senderService;
+    private final TelegramMessageSenderService senderService;
     private final UserService userService;
     private final FsmDispatcher fsmDispatcher;
     private final BotResponseMapper responseMapper;
@@ -23,7 +26,7 @@ public class UpdateHandler {
     public UpdateHandler(
             CallbackDispatcher callbackDispatcher,
             CommandDispatcher commandDispatcher,
-            MessageSenderService senderService,
+            TelegramMessageSenderService senderService,
             UserService userService,
             FsmDispatcher fsmDispatcher,
             BotResponseMapper responseMapper
@@ -50,7 +53,9 @@ public class UpdateHandler {
     public BotResponse process(Update update) {
         if (update.callbackQuery() != null) {
             var callback = update.callbackQuery();
-            return callbackDispatcher.processCallback(callback);
+            var response = callbackDispatcher.processCallback(callback);
+            removeKeyboardFromPrev(callback, response);
+            return response;
         }
 
         if (update.message() != null) {
@@ -72,5 +77,19 @@ public class UpdateHandler {
     private void sendUserErrorMessage(Long userId) {
         SendMessage errorRequest = new SendMessage(userId, "Произошла ошибка.");
         senderService.sendMessage(errorRequest);
+    }
+
+    private void removeKeyboardFromPrev(CallbackQuery callbackQuery, BotResponse response) {
+        var maybeMessage = callbackQuery.maybeInaccessibleMessage();
+        if (maybeMessage instanceof Message message) {
+            var keyboard = message.replyMarkup();
+            if (keyboard != null && response.removeKeyboard()) {
+                var lastText = message.text();
+                var messageId = message.messageId();
+                var chatId = callbackQuery.from().id();
+                var editRequest = new EditMessageText(chatId, messageId, lastText);
+                senderService.changePrevMessage(editRequest);
+            }
+        }
     }
 }

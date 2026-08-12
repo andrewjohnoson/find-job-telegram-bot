@@ -18,8 +18,8 @@ public class AskPositionFsmStep implements FsmStep {
     }
 
     @Override
-    public String nextResponseMessage() {
-        return "Выберите опыт работы";
+    public String responseMessage() {
+        return "Введите должность:";
     }
 
     @Override

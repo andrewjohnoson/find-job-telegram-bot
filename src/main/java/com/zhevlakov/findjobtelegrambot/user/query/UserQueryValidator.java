@@ -21,23 +21,13 @@ public class UserQueryValidator {
         return city.matches("^(\\D*)$");
     }
 
-    public boolean isExperience(String experience) {
-        try {
-            var experienceNumber = Integer.parseInt(experience);
-            return experienceNumber > 0 && experienceNumber < 60;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
     public boolean isSalary(String s) {
         return true;
     }
 
-    public boolean canKeepPrevPosition(UserEntity user, String input) {
+    public boolean canKeepPrevPosition(UserEntity user) {
         var query = userQueryService.getByChatId(user.getChatId());
-        return !user.getState().equals(FsmStates.ASK_POSITION) &&
-                query.getPosition() != null &&
-                input != null;
+        return !user.getState().equals(FsmStates.ASK_POSITION) ||
+                query.getPosition() != null;
     }
 }

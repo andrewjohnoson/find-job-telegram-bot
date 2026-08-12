@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 @Component
 public class AskEmploymentTypeFsmStep implements FsmStep {
     @Override
-    public String nextResponseMessage() {
-        return "Ввод запроса завершён.";
+    public String responseMessage() {
+        return "Выберите тип занятости";
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 @Component
 public interface FsmStep {
-    String nextResponseMessage();
+    String responseMessage();
     void setProperty(UserQuery query, String input);
     FsmStates currentState();
     FsmStates nextState();

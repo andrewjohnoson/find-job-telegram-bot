@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 @Component
 public class AskExperienceFsmStep implements FsmStep {
     @Override
-    public String nextResponseMessage() {
-        return "Введите город:";
+    public String responseMessage() {
+        return "Выберите опыт работы";
     }
 
     @Override

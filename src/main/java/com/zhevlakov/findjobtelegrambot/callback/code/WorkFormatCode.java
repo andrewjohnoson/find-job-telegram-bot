@@ -5,15 +5,15 @@ public enum WorkFormatCode {
     REMOTE("Удалённо", "remote"),
     HYBRID("Гибрид", "hybrid");
 
-    private final String expCode;
     private final String buttonText;
+    private final String expCode;
 
     WorkFormatCode(
-            String expCode,
-            String buttonText
+            String buttonText,
+            String expCode
     ) {
-        this.expCode = expCode;
         this.buttonText = buttonText;
+        this.expCode = expCode;
     }
 
     public String getButtonText() {

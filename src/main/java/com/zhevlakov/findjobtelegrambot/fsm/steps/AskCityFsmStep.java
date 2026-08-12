@@ -18,8 +18,8 @@ public class AskCityFsmStep implements FsmStep {
     }
 
     @Override
-    public String nextResponseMessage() {
-        return "Выберите формат работы";
+    public String responseMessage() {
+        return "Введите город:";
     }
 
     @Override
