@@ -39,4 +39,9 @@ public class UserService {
     public UserEntity updateUser(UserEntity user) {
         return userRepository.save(user);
     }
+
+    public UserEntity changeUserState(UserEntity user, FsmStates nextState) {
+        user.setState(nextState);
+        return updateUser(user);
+    }
 }

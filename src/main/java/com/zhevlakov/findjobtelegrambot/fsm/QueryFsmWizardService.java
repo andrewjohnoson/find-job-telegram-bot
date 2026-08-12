@@ -6,6 +6,7 @@ import com.zhevlakov.findjobtelegrambot.user.UserEntity;
 import com.zhevlakov.findjobtelegrambot.user.UserService;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
+import com.zhevlakov.findjobtelegrambot.user.query.UserQueryValidator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +26,14 @@ public class QueryFsmWizardService {
     private final UserService userService;
     private final UserQueryService queryService;
     private final KeyboardGenerator keyboardGenerator;
+    private final UserQueryValidator userQueryValidator;
 
     public QueryFsmWizardService(
             UserService userService,
             List<FsmStep> fsmStepList,
             UserQueryService queryService,
-            KeyboardGenerator keyboardGenerator
+            KeyboardGenerator keyboardGenerator,
+            UserQueryValidator userQueryValidator
     ) {
         this.steps = fsmStepList.stream()
                 .collect(Collectors.toMap(
@@ -42,6 +45,7 @@ public class QueryFsmWizardService {
         this.userService = userService;
         this.queryService = queryService;
         this.keyboardGenerator = keyboardGenerator;
+        this.userQueryValidator = userQueryValidator;
     }
 
     @Transactional
@@ -72,7 +76,7 @@ public class QueryFsmWizardService {
         FsmStep currentStep = steps.get(userState);
         if (currentStep == null) {
             log.error("Нет шага с таким состоянием = {}", userState.toString());
-            throw new IllegalStateException("Нет такого состояния.");
+            throw new IllegalStateException("Произошла ошибка.");
         }
 
         return currentStep;
@@ -92,15 +96,26 @@ public class QueryFsmWizardService {
     }
 
     @Transactional
-    public BotResponse processChoice(Long chatId, String value) {
+    public BotResponse processChoice(Long chatId, String input) {
         var user = userService.getUserById(chatId);
         var step = getCurrentStep(user);
 
-        return applyInput(user, step, value);
+        if (!userQueryValidator.canKeepPrevPosition(user, input)) {
+            log.error("В данный момент должность пользователя = {} не задана, поэтому не можем продолжить. chatId={}",
+                    user.getUserTag(), user.getChatId());
+            return BotResponse.error(user.getChatId(), "В данный момент должность не задана, поэтому нельзя продолжить.");
+        }
+
+        return applyInput(user, step, input);
     }
 
     private BotResponse applyInput(UserEntity user, FsmStep step, String input) {
         var chatId = user.getChatId();
+
+        if (input == null) {
+            userService.changeUserState(user, step.nextState());
+            return buildPost(user);
+        }
 
         if (step.validator() != null && !step.validator().test(input)) {
             log.error("Введены невалидные данные={} при обработке в состоянии={}", input, user.getState());
@@ -110,19 +125,18 @@ public class QueryFsmWizardService {
         var query = queryService.getByChatId(chatId);
 
         step.setProperty(query, input);
-        user.setState(step.nextState());
-
         queryService.updateQuery(query);
-        userService.updateUser(user);
 
-        var nextState = getCurrentStep(user);
+        userService.changeUserState(user, step.nextState());
 
-        return buildPost(user, nextState);
+        return buildPost(user);
     }
 
-    private BotResponse buildPost(UserEntity user, FsmStep step) {
+    private BotResponse buildPost(UserEntity user) {
+        var step = getCurrentStep(user);
+
         var keyboard = switch (step.inputType()) {
-            case USUAL_TEXT -> keyboardGenerator.getKeepPrevStateKeyboard(user.getState().toString());
+            case USUAL_TEXT -> keyboardGenerator.getKeepPrevStateKeyboard(user.getState().name());
             case REPLY_CHOICE -> null;
             case INLINE_CHOICE -> keyboardGenerator.buildInlineKeyboard(step);
         };

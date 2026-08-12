@@ -10,12 +10,12 @@ public class CallbackMapper {
         return new CallbackContent(
                 callbackQuery.from().id(),
                 data,
-                extractQueryStepCode(data),
+                extractQueryStateCode(data),
                 extractCode(data)
         );
     }
 
-    private String extractQueryStepCode(String data) {
+    private String extractQueryStateCode(String data) {
         return data.substring(0, data.indexOf(':'));
     }
 

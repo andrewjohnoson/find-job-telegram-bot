@@ -1,7 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.callback.code;
 
 public enum QueryCode {
-    NEXT("Более 6 лет", "6_more");
+    NEXT("Продолжить", "next");
 
     private final String buttonText;
     private final String expCode;

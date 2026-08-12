@@ -1,6 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.keyboard;
 
 import com.pengrad.telegrambot.model.request.*;
+import com.zhevlakov.findjobtelegrambot.callback.code.QueryCode;
 import com.zhevlakov.findjobtelegrambot.fsm.FsmStep;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,8 @@ public class KeyboardGenerator {
 
     public Keyboard getKeepPrevStateKeyboard(String data) {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Продолжить").callbackData("keepPrev:" + data));
+                new InlineKeyboardButton(QueryCode.NEXT.getButtonText())
+                        .callbackData(QueryCode.NEXT.getExpCode() + ":" + data));
     }
 
     public InlineKeyboardMarkup buildInlineKeyboard(FsmStep step) {
