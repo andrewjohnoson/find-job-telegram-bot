@@ -5,6 +5,8 @@ import com.zhevlakov.findjobtelegrambot.callback.code.QueryCode;
 import com.zhevlakov.findjobtelegrambot.fsm.FsmStep;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class KeyboardGenerator {
     public Keyboard getStartCommandKeyboard() {
@@ -23,8 +25,12 @@ public class KeyboardGenerator {
                         .callbackData(QueryCode.NEXT.getExpCode() + ":" + data));
     }
 
-    public InlineKeyboardMarkup buildInlineKeyboard(FsmStep step) {
-        InlineKeyboardButton[] buttons = step.nextKeyboardButtons().stream()
+    public InlineKeyboardMarkup buildInlineKeyboard(FsmStep step, Long chatId) {
+        List<KeyboardButtonContent> stepButtons = step.nextKeyboardButtons();
+
+        stepButtons = step.getFormattedButtons(stepButtons, chatId);
+
+        InlineKeyboardButton[] buttons = stepButtons.stream()
                 .map(content ->
                         new InlineKeyboardButton(content.name())
                                 .callbackData(

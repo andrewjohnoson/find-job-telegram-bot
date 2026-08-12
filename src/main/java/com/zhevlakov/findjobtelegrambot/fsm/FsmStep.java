@@ -17,4 +17,8 @@ public interface FsmStep {
     Predicate<String> validator();
     List<KeyboardButtonContent> nextKeyboardButtons();
     FsmStateCode inlineDataCode();
+
+    default List<KeyboardButtonContent> getFormattedButtons(List<KeyboardButtonContent> buttons, Long chatId) {
+        return buttons;
+    }
 }
