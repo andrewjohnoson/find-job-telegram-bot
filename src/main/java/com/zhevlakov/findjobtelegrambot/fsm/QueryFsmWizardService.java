@@ -100,17 +100,6 @@ public class QueryFsmWizardService {
     public BotResponse processChoice(Long chatId, String input) {
         var user = userService.getUserById(chatId);
 
-//        if (user.getState().equals(FsmStates.FREE)) {
-//            log.warn("Пользователь = {} в чате = {} нажал inline-кнопку для запросов, когда запрос не создаётся.", user.getUserTag(), user.getChatId());
-//            return BotResponse.error(chatId, "В данный момент запрос не создаётся, поэтому данные кнопки не доступны.");
-//        }
-
-        if (!userQueryValidator.canKeepPrevPosition(user)) {
-            log.error("processChoice: В данный момент должность пользователя = {} не задана, поэтому не можем продолжить. chatId={}",
-                    user.getUserTag(), user.getChatId());
-            return BotResponse.error(user.getChatId(), "В данный момент должность не задана, поэтому нельзя продолжить.");
-        }
-
         var step = getCurrentStep(user);
         return applyInput(user, step, input);
     }

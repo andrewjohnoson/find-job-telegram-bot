@@ -3,6 +3,9 @@ package com.zhevlakov.findjobtelegrambot.user.query;
 import com.zhevlakov.findjobtelegrambot.user.UserEntity;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "user_query")
 public class UserQuery {
@@ -13,20 +16,35 @@ public class UserQuery {
     @Column(name = "position")
     private String position;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "user_query_experience_types",
+            joinColumns = @JoinColumn(name = "user_query_id")
+    )
     @Column(name = "experience")
-    private String experience;
+    private List<String> experienceList = new ArrayList<>();
 
     @Column(name = "city")
     private String city;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "user_query_work_format_type",
+            joinColumns = @JoinColumn(name = "user_query_id")
+    )
     @Column(name = "work_format")
-    private String workFormat;
+    private List<String> workFormatList = new ArrayList<>();
 
     @Column(name = "salary")
     private String salary;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "user_query_employment_type",
+            joinColumns = @JoinColumn(name = "user_query_id")
+    )
     @Column(name = "employment_type")
-    private String employmentType;
+    private List<String> employmentTypeList = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "user_chat_id", referencedColumnName = "chat_id")
@@ -38,20 +56,14 @@ public class UserQuery {
     public UserQuery(
             Long id,
             String position,
-            String experience,
             String city,
-            String workFormat,
             String salary,
-            String employmentType,
             UserEntity userEntity
     ) {
         this.id = id;
         this.position = position;
-        this.experience = experience;
         this.city = city;
-        this.workFormat = workFormat;
         this.salary = salary;
-        this.employmentType = employmentType;
         this.userEntity = userEntity;
     }
 
@@ -63,28 +75,40 @@ public class UserQuery {
         this.position = position;
     }
 
-    public void setExperience(String experience) {
-        this.experience = experience;
-    }
-
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public void setWorkFormat(String workFormat) {
-        this.workFormat = workFormat;
     }
 
     public void setSalary(String salary) {
         this.salary = salary;
     }
 
-    public void setEmploymentType(String employmentType) {
-        this.employmentType = employmentType;
-    }
-
     public void setUserEntity(UserEntity userEntity) {
         this.userEntity = userEntity;
+    }
+
+    public List<String> getExperienceList() {
+        return experienceList;
+    }
+
+    public void setExperienceList(List<String> experienceList) {
+        this.experienceList = experienceList;
+    }
+
+    public List<String> getWorkFormatList() {
+        return workFormatList;
+    }
+
+    public void setWorkFormatList(List<String> workFormatList) {
+        this.workFormatList = workFormatList;
+    }
+
+    public List<String> getEmploymentTypeList() {
+        return employmentTypeList;
+    }
+
+    public void setEmploymentTypeList(List<String> employmentTypeList) {
+        this.employmentTypeList = employmentTypeList;
     }
 
     public Long getId() {
@@ -95,29 +119,48 @@ public class UserQuery {
         return position;
     }
 
-    public String getExperience() {
-        return experience;
-    }
-
     public String getCity() {
         return city;
-    }
-
-    public String getWorkFormat() {
-        return workFormat;
     }
 
     public String getSalary() {
         return salary;
     }
 
-    public String getEmploymentType() {
-        return employmentType;
-    }
-
     public UserEntity getUserEntity() {
         return userEntity;
     }
+
+    public void addEmploymentType(String input) {
+        if (!employmentTypeList.contains(input)) {
+            employmentTypeList.add(input);
+        }
+    }
+
+    public void removeEmploymentType(String input) {
+        employmentTypeList.remove(input);
+    }
+
+    public void addWorkFormat(String input) {
+        if (!workFormatList.contains(input)) {
+            workFormatList.add(input);
+        }
+    }
+
+    public void removeWorkFormat(String input) {
+        workFormatList.remove(input);
+    }
+
+    public void addExperience(String input) {
+        if (!experienceList.contains(input)) {
+            experienceList.add(input);
+        }
+    }
+
+    public void removeExperience(String input) {
+        experienceList.remove(input);
+    }
+
 
     @Override
     public String toString() {
@@ -128,7 +171,7 @@ public class UserQuery {
                 <i>формат работы:</i> %s,
                 <i>желаемая зарплата:</i> %s,
                 <i>тип занятости:</i> %s.
-                """.formatted(position, experience, city,
-                                workFormat, salary, employmentType);
+                """.formatted(position, experienceList, city,
+                workFormatList, salary, employmentTypeList);
     }
 }

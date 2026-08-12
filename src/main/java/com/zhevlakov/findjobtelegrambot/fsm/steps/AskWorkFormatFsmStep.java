@@ -23,7 +23,7 @@ public class AskWorkFormatFsmStep implements FsmStep {
             UserQuery query,
             String input
     ) {
-        query.setWorkFormat(input);
+        query.addEmploymentType(input);
     }
 
     @Override

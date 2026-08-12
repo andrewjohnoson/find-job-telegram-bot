@@ -22,7 +22,7 @@ public class AskExperienceFsmStep implements FsmStep {
             UserQuery query,
             String input
     ) {
-        query.setExperience(input);
+        query.addExperience(input);
     }
 
     @Override

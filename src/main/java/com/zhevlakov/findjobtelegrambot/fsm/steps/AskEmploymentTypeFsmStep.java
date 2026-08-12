@@ -22,7 +22,7 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
             UserQuery query,
             String input
     ) {
-        query.setEmploymentType(input);
+        query.addEmploymentType(input);
     }
 
     @Override
