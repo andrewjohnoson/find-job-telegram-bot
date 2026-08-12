@@ -6,7 +6,6 @@ import com.zhevlakov.findjobtelegrambot.user.UserEntity;
 import com.zhevlakov.findjobtelegrambot.user.UserService;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
-import com.zhevlakov.findjobtelegrambot.user.query.UserQueryValidator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,14 +25,12 @@ public class QueryFsmWizardService {
     private final UserService userService;
     private final UserQueryService queryService;
     private final KeyboardGenerator keyboardGenerator;
-    private final UserQueryValidator userQueryValidator;
 
     public QueryFsmWizardService(
             UserService userService,
             List<FsmStep> fsmStepList,
             UserQueryService queryService,
-            KeyboardGenerator keyboardGenerator,
-            UserQueryValidator userQueryValidator
+            KeyboardGenerator keyboardGenerator
     ) {
         this.steps = fsmStepList.stream()
                 .collect(Collectors.toMap(
@@ -45,7 +42,6 @@ public class QueryFsmWizardService {
         this.userService = userService;
         this.queryService = queryService;
         this.keyboardGenerator = keyboardGenerator;
-        this.userQueryValidator = userQueryValidator;
     }
 
     @Transactional
@@ -99,17 +95,6 @@ public class QueryFsmWizardService {
     @Transactional
     public BotResponse processChoice(Long chatId, String input) {
         var user = userService.getUserById(chatId);
-
-//        if (user.getState().equals(FsmStates.FREE)) {
-//            log.warn("Пользователь = {} в чате = {} нажал inline-кнопку для запросов, когда запрос не создаётся.", user.getUserTag(), user.getChatId());
-//            return BotResponse.error(chatId, "В данный момент запрос не создаётся, поэтому данные кнопки не доступны.");
-//        }
-
-        if (!userQueryValidator.canKeepPrevPosition(user)) {
-            log.error("processChoice: В данный момент должность пользователя = {} не задана, поэтому не можем продолжить. chatId={}",
-                    user.getUserTag(), user.getChatId());
-            return BotResponse.error(user.getChatId(), "В данный момент должность не задана, поэтому нельзя продолжить.");
-        }
 
         var step = getCurrentStep(user);
         return applyInput(user, step, input);
