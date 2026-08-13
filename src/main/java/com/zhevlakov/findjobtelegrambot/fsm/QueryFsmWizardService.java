@@ -54,7 +54,13 @@ public class QueryFsmWizardService {
         }
 
         userService.updateUser(user);
-        return buildPost(user);
+        return buildPost(user, null);
+    }
+
+    public BotResponse confirm(Long chatId) {
+        var keyboard = keyboardGenerator.getStartCommandKeyboard();
+        var message = queryService.getByChatId(chatId).toString();
+        return BotResponse.post(chatId, message, keyboard, true);
     }
 
     @Transactional
@@ -105,7 +111,7 @@ public class QueryFsmWizardService {
 
         if (input == null) {
             userService.changeUserState(user, step.nextState());
-            return buildPost(user);
+            return buildPost(user, step);
         }
 
         // дописать валидатор для города и ещё чего-то там
@@ -118,9 +124,10 @@ public class QueryFsmWizardService {
 
         step.setProperty(query, input);
         queryService.updateQuery(query);
+
         userService.changeUserState(user, step.nextState());
 
-        return buildPost(user);
+        return buildPost(user, step);
     }
 
     private BotResponse applyChoiceInput(UserEntity user, FsmStep step, String input) {
@@ -128,7 +135,7 @@ public class QueryFsmWizardService {
 
         if (input == null) {
             userService.changeUserState(user, step.nextState());
-            return buildPost(user);
+            return buildPost(user, step);
         }
 
         var query = queryService.getByChatId(chatId);
@@ -136,10 +143,14 @@ public class QueryFsmWizardService {
         step.setProperty(query, input);
         queryService.updateQuery(query);
 
-        return buildPost(user);
+        return buildPost(user, step);
     }
 
-    private BotResponse buildPost(UserEntity user) {
+    private BotResponse buildPost(UserEntity user, FsmStep prevStep) {
+        if (user.getState().equals(FsmStates.FREE)) {
+            return confirm(user.getChatId());
+        }
+
         var step = getCurrentStep(user);
 
         var keyboard = switch (step.inputType()) {
@@ -148,7 +159,9 @@ public class QueryFsmWizardService {
             case INLINE_CHOICE, INLINE_BUTTON -> keyboardGenerator.buildInlineKeyboard(step, user.getChatId());
         };
 
-        Boolean updateKeyboard = step.inputType().equals(InputType.INLINE_CHOICE);
+        Boolean updateKeyboard = prevStep != null
+                && step.inputType().equals(prevStep.inputType())
+                && step.currentState().equals(prevStep.currentState());
 
         return BotResponse.post(user.getChatId(), step.responseMessage(), keyboard, true, updateKeyboard);
     }

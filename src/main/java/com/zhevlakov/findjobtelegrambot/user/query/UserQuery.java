@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "user_query")
@@ -164,14 +165,15 @@ public class UserQuery {
 
     @Override
     public String toString() {
-        return """
-                <i>Должность:</i> %s,
-                <i>опыт:</i> %s,
-                <i>город:</i> %s,
-                <i>формат работы:</i> %s,
-                <i>желаемая зарплата:</i> %s,
-                <i>тип занятости:</i> %s.
-                """.formatted(position, experienceList, city,
-                workFormatList, salary, employmentTypeList);
+        StringJoiner sj = new StringJoiner(",\n", "", ".");
+
+        if (position != null)           sj.add("<i>Должность:</i> " + position);
+        if (experienceList != null && !experienceList.isEmpty())     sj.add("<i>опыт:</i> " + experienceList);
+        if (city != null)               sj.add("<i>город:</i> " + city);
+        if (workFormatList != null && !workFormatList.isEmpty())     sj.add("<i>формат работы:</i> " + workFormatList);
+        if (salary != null)             sj.add("<i>желаемая зарплата:</i> " + salary);
+        if (employmentTypeList != null && !employmentTypeList.isEmpty()) sj.add("<i>тип занятости:</i> " + employmentTypeList);
+
+        return sj.toString();
     }
 }
