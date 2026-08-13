@@ -3,6 +3,7 @@ package com.zhevlakov.findjobtelegrambot.bot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackDispatcher;
@@ -42,6 +43,11 @@ public class UpdateHandler {
     public void handleUpdate(Update update) {
         try {
             var botResponse = process(update);
+
+            if (botResponse.updatePrevKeyboard()) {
+                return;
+            }
+
             var request = responseMapper.toRequest(botResponse);
             senderService.sendMessage(request);
         } catch (Exception e) {
@@ -54,7 +60,11 @@ public class UpdateHandler {
         if (update.callbackQuery() != null) {
             var callback = update.callbackQuery();
             var response = callbackDispatcher.processCallback(callback);
-            removeKeyboardFromPrev(callback, response);
+            if (response.updatePrevKeyboard()) {
+                updatePrevKeyboard(callback, response);
+            } else {
+                removeKeyboardFromPrev(callback, response);
+            }
             return response;
         }
 
@@ -77,6 +87,18 @@ public class UpdateHandler {
     private void sendUserErrorMessage(Long userId) {
         SendMessage errorRequest = new SendMessage(userId, "Произошла ошибка.");
         senderService.sendMessage(errorRequest);
+    }
+
+    private void updatePrevKeyboard(CallbackQuery callbackQuery, BotResponse response) {
+        var maybeMessage = callbackQuery.maybeInaccessibleMessage();
+        if (maybeMessage instanceof Message message) {
+            var lastText = message.text();
+            var messageId = message.messageId();
+            var chatId = callbackQuery.from().id();
+            var editRequest = new EditMessageText(chatId, messageId, lastText)
+                    .replyMarkup((InlineKeyboardMarkup) response.keyboard());
+            senderService.changePrevMessage(editRequest);
+        }
     }
 
     private void removeKeyboardFromPrev(CallbackQuery callbackQuery, BotResponse response) {

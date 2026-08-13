@@ -25,16 +25,15 @@ public class KeyboardGenerator {
                         .callbackData(QueryCode.NEXT.getExpCode() + ":" + data));
     }
 
-    public InlineKeyboardMarkup buildInlineKeyboard(FsmStep step, Long chatId) {
-        List<KeyboardButtonContent> stepButtons = step.nextKeyboardButtons();
+    public InlineKeyboardMarkup buildInlineKeyboard(KeyboardProvider provider, Long chatId) {
+        var settings = provider.getKeyboardSettings(chatId);
+        var finalButtons = settings.getFinalButtons();
 
-        stepButtons = step.getFormattedButtons(stepButtons, chatId);
-
-        InlineKeyboardButton[] buttons = stepButtons.stream()
+        InlineKeyboardButton[] buttons = finalButtons.stream()
                 .map(content ->
                         new InlineKeyboardButton(content.name())
                                 .callbackData(
-                                        step.inlineDataCode().getInlineButtonCode() + ":" + content.code()
+                                        settings.inlineCode() + ":" + content.code()
                                 ))
                 .toArray(InlineKeyboardButton[]::new);
 
