@@ -10,10 +10,15 @@ import java.util.List;
 @Component
 public class KeyboardGenerator {
     public Keyboard getStartCommandKeyboard() {
-        KeyboardButton[] buttons = {
-                new KeyboardButton("Новый запрос"),
-                new KeyboardButton("Избранное"),
-                new KeyboardButton("Перестать искать")
+        KeyboardButton[][] buttons = {
+                new KeyboardButton[] {
+                    new KeyboardButton("Новый запрос"),
+                    new KeyboardButton("Показать текущий запрос"),
+                },
+                new KeyboardButton[]{
+                        new KeyboardButton("Избранное"),
+                        new KeyboardButton("Перестать искать")
+                }
         };
 
         return new ReplyKeyboardMarkup(buttons).resizeKeyboard(true);

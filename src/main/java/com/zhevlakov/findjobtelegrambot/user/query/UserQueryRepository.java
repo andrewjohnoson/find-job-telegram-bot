@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface UserQueryRepository extends JpaRepository<UserQuery, Long> {
     Optional<UserQuery> findByUserEntity_ChatId(Long id);
+    boolean existsByUserEntity_ChatId(Long id);
 }

@@ -4,6 +4,7 @@ public enum CommandHandlerName {
     START("/start"),
     CANCEL("/cancel"),
     NEW_QUERY("Новый запрос"),
+    CURRENT_QUERY("Показать текущий запрос"),
     FAVOURITE("Избранное"),
     STOP_NOTIFICATIONS("Перестать искать");
 

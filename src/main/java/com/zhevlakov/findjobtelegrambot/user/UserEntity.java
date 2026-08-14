@@ -19,7 +19,7 @@ public class UserEntity {
     private FsmStates state;
 
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
-    private UserQue ry userQuery;
+    private UserQuery userQuery;
 
     public UserEntity() {
     }
