@@ -3,6 +3,7 @@ package com.zhevlakov.findjobtelegrambot.fsm.steps;
 import com.zhevlakov.findjobtelegrambot.fsm.*;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
+import com.zhevlakov.findjobtelegrambot.user.query.UserQueryValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,6 +11,12 @@ import java.util.function.Predicate;
 
 @Component
 public class AskSalaryFsmStep implements FsmStep {
+    private final UserQueryValidator queryValidator;
+
+    public AskSalaryFsmStep(UserQueryValidator queryValidator) {
+        this.queryValidator = queryValidator;
+    }
+
     @Override
     public String responseMessage() {
         return "Введите желаемую з/п:";
@@ -35,7 +42,7 @@ public class AskSalaryFsmStep implements FsmStep {
 
     @Override
     public Predicate<String> validator() {
-        return null;
+        return queryValidator::isSalary;
     }
 
     @Override

@@ -13,8 +13,9 @@ public class CurrentQueryCommandHandler implements CommandHandler {
     private final UserService userService;
     private final UserQueryService queryService;
 
-    public CurrentQueryCommandHandler(UserService userService,
-                                      UserQueryService queryService
+    public CurrentQueryCommandHandler(
+            UserService userService,
+            UserQueryService queryService
     ) {
         this.userService = userService;
         this.queryService = queryService;

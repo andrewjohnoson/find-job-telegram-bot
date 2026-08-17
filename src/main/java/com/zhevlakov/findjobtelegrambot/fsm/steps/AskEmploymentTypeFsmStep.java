@@ -59,9 +59,9 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
         return List.of(
-                new KeyboardButtonContent(EmploymentTypeCode.FULL.getButtonText(), EmploymentTypeCode.FULL.getExpCode()),
-                new KeyboardButtonContent(EmploymentTypeCode.PART.getButtonText(), EmploymentTypeCode.PART.getExpCode()),
-                new KeyboardButtonContent(EmploymentTypeCode.TRAINEE.getButtonText(), EmploymentTypeCode.TRAINEE.getExpCode()),
+                new KeyboardButtonContent(EmploymentTypeCode.FULL.getButtonText(), EmploymentTypeCode.FULL.getEmplCode()),
+                new KeyboardButtonContent(EmploymentTypeCode.PART.getButtonText(), EmploymentTypeCode.PART.getEmplCode()),
+                new KeyboardButtonContent(EmploymentTypeCode.TRAINEE.getButtonText(), EmploymentTypeCode.TRAINEE.getEmplCode()),
                 new KeyboardButtonContent(QueryCode.NEXT.getButtonText(), QueryCode.NEXT.getExpCode())
         );
     }

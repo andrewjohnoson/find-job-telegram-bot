@@ -18,11 +18,11 @@ public class UserQueryValidator {
     }
 
     public boolean isCity(String city) {
-        return city.matches("^(\\D*)$");
+        return city.matches("^[А-Яа-яЁё]+$");
     }
 
     public boolean isSalary(String s) {
-        return true;
+        return s.matches("^[0-9]+(-[0-9]+)?$");
     }
 
     public boolean canKeepPrevPosition(UserEntity user) {

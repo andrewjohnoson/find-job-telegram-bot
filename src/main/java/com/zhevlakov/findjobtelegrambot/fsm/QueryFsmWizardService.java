@@ -114,7 +114,6 @@ public class QueryFsmWizardService {
             return buildPost(user, step);
         }
 
-        // дописать валидатор для города и ещё чего-то там
         if (step.validator() != null && !step.validator().test(input)) {
             log.error("Введены невалидные данные={} при обработке в состоянии={}", input, user.getState());
             return BotResponse.error(chatId, "Введены невалидные данные.");

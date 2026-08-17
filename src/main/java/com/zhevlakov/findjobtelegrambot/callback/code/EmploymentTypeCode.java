@@ -6,21 +6,21 @@ public enum EmploymentTypeCode {
     TRAINEE("Стажировка", "train");
 
     private final String buttonText;
-    private final String expCode;
+    private final String emplCode;
 
     EmploymentTypeCode(
             String buttonText,
-            String expCode
+            String emplCode
     ) {
         this.buttonText = buttonText;
-        this.expCode = expCode;
+        this.emplCode = emplCode;
     }
 
     public String getButtonText() {
         return buttonText;
     }
 
-    public String getExpCode() {
-        return expCode;
+    public String getEmplCode() {
+        return emplCode;
     }
 }

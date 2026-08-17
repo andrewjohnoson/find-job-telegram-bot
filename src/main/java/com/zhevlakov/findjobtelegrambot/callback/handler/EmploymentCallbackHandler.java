@@ -27,15 +27,15 @@ public class EmploymentCallbackHandler implements CallbackHandler {
         var type = callbackContent.code();
         var chatId = callbackContent.chatId();
 
-        if (type.equals(EmploymentTypeCode.FULL.getExpCode())) {
+        if (type.equals(EmploymentTypeCode.FULL.getEmplCode())) {
             return handleFull(chatId);
         }
 
-        if (type.equals(EmploymentTypeCode.PART.getExpCode())) {
+        if (type.equals(EmploymentTypeCode.PART.getEmplCode())) {
             return handlePart(chatId);
         }
 
-        if (type.equals(EmploymentTypeCode.TRAINEE.getExpCode())) {
+        if (type.equals(EmploymentTypeCode.TRAINEE.getEmplCode())) {
             return handleTrainee(chatId);
         }
 
