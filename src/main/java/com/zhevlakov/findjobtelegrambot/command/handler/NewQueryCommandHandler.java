@@ -8,6 +8,8 @@ import com.zhevlakov.findjobtelegrambot.fsm.QueryFsmWizardService;
 import com.zhevlakov.findjobtelegrambot.user.UserService;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class NewQueryCommandHandler implements CommandHandler {
     private final UserService userService;
@@ -22,13 +24,14 @@ public class NewQueryCommandHandler implements CommandHandler {
     }
 
     @Override
-    public BotResponse handle(Message message) {
+    public List<BotResponse> handle(Message message) {
         var chatId = message.chat().id();
         if (!userService.isUserFree(chatId)) {
-            return BotResponse.error(chatId, "Данная операция в данный момент не доступна.");
+            return BotResponse.asList(BotResponse.error(chatId, "Данная операция в данный момент не доступна."));
         }
 
-        return wizardService.start(chatId);
+        var botResponse = wizardService.start(chatId);
+        return BotResponse.asList(botResponse);
     }
 
     @Override

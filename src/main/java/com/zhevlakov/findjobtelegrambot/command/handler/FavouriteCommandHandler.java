@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class FavouriteCommandHandler implements CommandHandler {
     private final Logger log = LoggerFactory.getLogger(FavouriteCommandHandler.class);
@@ -20,9 +22,9 @@ public class FavouriteCommandHandler implements CommandHandler {
     }
 
     @Override
-    public BotResponse handle(Message message) {
+    public List<BotResponse> handle(Message message) {
         log.info(provider.fetchVacancies());
-        return BotResponse.post(message.chat().id(), "Выполнено");
+        return BotResponse.asList(BotResponse.post(message.chat().id(), "Выполнено"));
     }
 
     @Override

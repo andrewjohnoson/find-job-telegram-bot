@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class CancelCommandHandler implements CommandHandler {
     private final Logger log = LoggerFactory.getLogger(CancelCommandHandler.class);
@@ -29,15 +31,15 @@ public class CancelCommandHandler implements CommandHandler {
     }
 
     @Override
-    public BotResponse handle(Message message) {
+    public List<BotResponse> handle(Message message) {
         var chatId = message.chat().id();
         if (userService.haveUser(chatId) && userService.isUserFree(chatId)) {
             var keyboard = keyboardGenerator.getStartCommandKeyboard();
             log.error("Пользователь не может отменить создание запроса, так как запрос не создаётся.");
-            return BotResponse.error(chatId, "Вы не создаёте запрос в данный момент.", keyboard);
+            return BotResponse.asList(BotResponse.error(chatId, "Вы не создаёте запрос в данный момент.", keyboard));
         }
 
-        return wizardService.cancel(chatId);
+        return BotResponse.asList(wizardService.cancel(chatId));
     }
 
     @Override

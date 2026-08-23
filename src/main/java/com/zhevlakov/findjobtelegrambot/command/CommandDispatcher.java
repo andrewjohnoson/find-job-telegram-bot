@@ -32,13 +32,13 @@ public class CommandDispatcher {
         this.userService = userService;
     }
 
-    public BotResponse processCommand(Message message) {
+    public List<BotResponse> processCommand(Message message) {
         var chatId = message.chat().id();
         var commandValue = message.text();
 
         if (!userService.haveUser(chatId)
                 && !commandValue.equals(CommandHandlerName.START.getCommandName())) {
-            return BotResponse.error(chatId, "Данная операция в данный момент не доступна.");
+            return BotResponse.asList(BotResponse.error(chatId, "Данная операция в данный момент не доступна."));
         }
 
         var commandHandler = commandHandlersMap.get(commandValue);

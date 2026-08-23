@@ -6,11 +6,13 @@ import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class StopNotificationsCommandHandler implements CommandHandler {
 
     @Override
-    public BotResponse handle(Message message) {
+    public List<BotResponse> handle(Message message) {
         return null;
     }
 

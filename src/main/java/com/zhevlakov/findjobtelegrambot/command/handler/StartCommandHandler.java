@@ -8,6 +8,8 @@ import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
 import com.zhevlakov.findjobtelegrambot.user.UserService;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class StartCommandHandler implements CommandHandler {
     private final static String TEXT_RESPONSE = """
@@ -28,17 +30,17 @@ public class StartCommandHandler implements CommandHandler {
     }
 
     @Override
-    public BotResponse handle(Message message) {
+    public List<BotResponse> handle(Message message) {
         var chatId = message.chat().id();
         if (userService.haveUser(chatId) && !userService.isUserFree(chatId)) {
-            return BotResponse.error(chatId, "Данная операция в данный момент не доступна.");
+            return BotResponse.asList(BotResponse.error(chatId, "Данная операция в данный момент не доступна."));
         }
 
         var userTag = message.from().username();
         var user = userService.createNewUser(chatId, userTag);
 
-        return BotResponse.post(user.getChatId(), TEXT_RESPONSE.formatted(user.getUserTag()),
-                keyboardGenerator.getStartCommandKeyboard());
+        return BotResponse.asList(BotResponse.post(user.getChatId(), TEXT_RESPONSE.formatted(user.getUserTag()),
+                keyboardGenerator.getStartCommandKeyboard()));
     }
 
     @Override

@@ -26,7 +26,7 @@ public class HideVacancyCallbackHandler implements CallbackHandler {
 
         userVacancyService.changeVacancyStatus(vacancyId, VacancyStatus.HIDDEN);
 
-        log.info("Вакансия vacancyId = {} добавлено в избарнное пользователя chatId = {}", vacancyId, chatId);
+        log.info("Вакансия vacancyId = {} спрятана для пользователя chatId = {}", vacancyId, chatId);
         return BotResponse.post(chatId, "Пост добавлен в избранное.");
     }
 

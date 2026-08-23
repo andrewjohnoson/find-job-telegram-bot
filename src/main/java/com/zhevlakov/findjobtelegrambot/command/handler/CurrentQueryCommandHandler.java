@@ -8,6 +8,8 @@ import com.zhevlakov.findjobtelegrambot.user.UserService;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class CurrentQueryCommandHandler implements CommandHandler {
     private final UserService userService;
@@ -22,19 +24,19 @@ public class CurrentQueryCommandHandler implements CommandHandler {
     }
 
     @Override
-    public BotResponse handle(Message message) {
+    public List<BotResponse> handle(Message message) {
         var chatId = message.chat().id();
 
         if (!userService.haveUser(chatId)) {
-            return BotResponse.error(chatId, "Произошла ошибка");
+            return BotResponse.asList(BotResponse.error(chatId, "Произошла ошибка"));
         }
 
         if (!queryService.hasQuery(chatId)) {
-            return BotResponse.post(chatId, "Пользоватлеь не имеет запроса");
+            return BotResponse.asList(BotResponse.post(chatId, "Пользоватлеь не имеет запроса"));
         }
 
         var query = queryService.getByChatId(chatId);
-        return BotResponse.post(chatId, query.toString());
+        return BotResponse.asList(BotResponse.post(chatId, query.toString()));
     }
 
     @Override

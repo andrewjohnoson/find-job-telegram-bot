@@ -77,7 +77,7 @@ public class UpdateHandler {
             var chatId = message.chat().id();
 
             if (commandDispatcher.isCommand(message)) {
-                return BotResponse.asList(commandDispatcher.processCommand(message));
+                return commandDispatcher.processCommand(message);
             }
 
             if (!userService.isUserFree(chatId)) {
