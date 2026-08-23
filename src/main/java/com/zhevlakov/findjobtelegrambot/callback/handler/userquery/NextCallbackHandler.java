@@ -1,9 +1,9 @@
-package com.zhevlakov.findjobtelegrambot.callback.handler;
+package com.zhevlakov.findjobtelegrambot.callback.handler.userquery;
 
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackContent;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackHandler;
-import com.zhevlakov.findjobtelegrambot.fsm.FsmStateCode;
+import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
 import com.zhevlakov.findjobtelegrambot.fsm.FsmStates;
 import com.zhevlakov.findjobtelegrambot.fsm.QueryFsmWizardService;
 import com.zhevlakov.findjobtelegrambot.user.UserService;
@@ -54,7 +54,7 @@ public class NextCallbackHandler implements CallbackHandler {
     }
 
     @Override
-    public FsmStateCode queryCode() {
-        return FsmStateCode.NEXT;
+    public InlineDataCode queryCode() {
+        return InlineDataCode.NEXT;
     }
 }

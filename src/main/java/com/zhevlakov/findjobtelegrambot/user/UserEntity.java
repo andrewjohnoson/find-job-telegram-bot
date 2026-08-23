@@ -2,7 +2,11 @@ package com.zhevlakov.findjobtelegrambot.user;
 
 import com.zhevlakov.findjobtelegrambot.fsm.FsmStates;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
+import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancy;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -20,6 +24,9 @@ public class UserEntity {
 
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private UserQuery userQuery;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserVacancy> userVacancyList = new ArrayList<>();
 
     public UserEntity() {
     }
@@ -39,6 +46,11 @@ public class UserEntity {
     public void setUserRequest(UserQuery userQuery) {
         this.userQuery = userQuery;
         userQuery.setUserEntity(this);
+    }
+
+    public void addUserVacancy(UserVacancy userVacancy) {
+        userVacancyList.add(userVacancy);
+        userVacancy.setUser(this);
     }
 
     public void setChatId(Long chatId) {
@@ -64,8 +76,6 @@ public class UserEntity {
     public FsmStates getState() {
         return state;
     }
-
-
 
     public UserQuery getUserRequest() {
         return userQuery;

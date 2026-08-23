@@ -2,6 +2,8 @@ package com.zhevlakov.findjobtelegrambot.bot;
 
 import com.pengrad.telegrambot.model.request.Keyboard;
 
+import java.util.List;
+
 public record BotResponse(
         Long chatId,
         String text,
@@ -31,5 +33,9 @@ public record BotResponse(
 
     public static BotResponse error(Long chatId, String errorText, Keyboard keyboard) {
         return new BotResponse(chatId, errorText, keyboard, false, false);
+    }
+
+    public static List<BotResponse> asList(BotResponse response) {
+        return List.of(response);
     }
 }

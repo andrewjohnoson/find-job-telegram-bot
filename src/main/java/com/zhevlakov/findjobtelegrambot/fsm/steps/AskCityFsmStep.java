@@ -1,5 +1,6 @@
 package com.zhevlakov.findjobtelegrambot.fsm.steps;
 
+import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
 import com.zhevlakov.findjobtelegrambot.fsm.*;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
@@ -56,7 +57,7 @@ public class AskCityFsmStep implements FsmStep {
     }
 
     @Override
-    public FsmStateCode inlineDataCode() {
+    public InlineDataCode inlineDataCode() {
         return null;
     }
 }

@@ -3,6 +3,7 @@ package com.zhevlakov.findjobtelegrambot.command;
 public enum CommandHandlerName {
     START("/start"),
     CANCEL("/cancel"),
+    TEST("/test"),
     NEW_QUERY("Новый запрос"),
     CURRENT_QUERY("Показать текущий запрос"),
     FAVOURITE("Избранное"),

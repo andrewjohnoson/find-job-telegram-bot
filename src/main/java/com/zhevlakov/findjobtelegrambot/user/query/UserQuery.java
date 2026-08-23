@@ -14,10 +14,10 @@ public class UserQuery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "position")
+    @Column(name = "position", nullable = false)
     private String position;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable(
             name = "user_query_experience_types",
             joinColumns = @JoinColumn(name = "user_query_id")
@@ -28,7 +28,7 @@ public class UserQuery {
     @Column(name = "city")
     private String city;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable(
             name = "user_query_work_format_type",
             joinColumns = @JoinColumn(name = "user_query_id")
@@ -39,7 +39,7 @@ public class UserQuery {
     @Column(name = "salary")
     private String salary;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable(
             name = "user_query_employment_type",
             joinColumns = @JoinColumn(name = "user_query_id")
@@ -47,7 +47,7 @@ public class UserQuery {
     @Column(name = "employment_type")
     private List<String> employmentTypeList = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_chat_id", referencedColumnName = "chat_id")
     private UserEntity userEntity;
 

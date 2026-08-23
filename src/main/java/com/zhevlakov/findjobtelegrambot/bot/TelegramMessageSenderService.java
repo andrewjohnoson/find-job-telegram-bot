@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TelegramMessageSenderService implements MessageSenderService {
     private final TelegramBot bot;
@@ -25,6 +27,11 @@ public class TelegramMessageSenderService implements MessageSenderService {
     public void sendMessage(AbstractSendRequest<?> request) {
         SendResponse response = bot.execute(request);
         log.info("Is execution successful={}", response.isOk());
+    }
+
+    public void sendMessage(List<? extends AbstractSendRequest<?>> requestList) {
+        log.info("Execution for list of requestList = {}", requestList);
+        requestList.forEach(this::sendMessage);
     }
 
     public void changePrevMessage(EditMessageText request) {

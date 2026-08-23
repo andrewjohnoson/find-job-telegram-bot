@@ -1,4 +1,4 @@
-package com.zhevlakov.findjobtelegrambot.callback.code;
+package com.zhevlakov.findjobtelegrambot.callback.code.userquery;
 
 public enum EmploymentTypeCode {
     FULL("Полная занятость", "full"),

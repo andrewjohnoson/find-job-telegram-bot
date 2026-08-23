@@ -1,5 +1,6 @@
 package com.zhevlakov.findjobtelegrambot.fsm;
 
+import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardProvider;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardSettings;
@@ -18,7 +19,7 @@ public interface FsmStep extends KeyboardProvider {
     InputType inputType();
     Predicate<String> validator();
     List<KeyboardButtonContent> nextKeyboardButtons();
-    FsmStateCode inlineDataCode();
+    InlineDataCode inlineDataCode();
 
     default List<KeyboardButtonContent> getFormattedButtons(List<KeyboardButtonContent> buttons, Long chatId) {
         return buttons;

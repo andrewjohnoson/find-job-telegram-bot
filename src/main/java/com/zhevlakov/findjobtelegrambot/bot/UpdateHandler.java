@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UpdateHandler {
     private final CommandDispatcher commandDispatcher;
@@ -42,21 +44,23 @@ public class UpdateHandler {
 
     public void handleUpdate(Update update) {
         try {
-            var botResponse = process(update);
+            var botResponseList = process(update);
+            for (BotResponse botResponse : botResponseList) {
+                if (botResponse.updatePrevKeyboard()) {
+                    continue;
+                }
 
-            if (botResponse.updatePrevKeyboard()) {
-                return;
+                var request = responseMapper.toRequest(botResponse);
+                senderService.sendMessage(request);
             }
 
-            var request = responseMapper.toRequest(botResponse);
-            senderService.sendMessage(request);
         } catch (Exception e) {
-            log.info("Во время работы произошла ошибка", e);
+            log.error("Во время работы произошла ошибка", e);
             sendUserErrorMessage(update.message().chat().id());
         }
     }
 
-    public BotResponse process(Update update) {
+    public List<BotResponse> process(Update update) {
         if (update.callbackQuery() != null) {
             var callback = update.callbackQuery();
             var response = callbackDispatcher.processCallback(callback);
@@ -65,7 +69,7 @@ public class UpdateHandler {
             } else {
                 removeKeyboardFromPrev(callback, response);
             }
-            return response;
+            return BotResponse.asList(response);
         }
 
         if (update.message() != null) {
@@ -73,15 +77,15 @@ public class UpdateHandler {
             var chatId = message.chat().id();
 
             if (commandDispatcher.isCommand(message)) {
-                return commandDispatcher.processCommand(message);
+                return BotResponse.asList(commandDispatcher.processCommand(message));
             }
 
             if (!userService.isUserFree(chatId)) {
-                return fsmDispatcher.processFsmCommand(message);
+                return BotResponse.asList(fsmDispatcher.processFsmCommand(message));
             }
         }
 
-        return BotResponse.post(update.message().chat().id(), "Рядовое сообщение.");
+        return BotResponse.asList(BotResponse.post(update.message().chat().id(), "Рядовое сообщение."));
     }
 
     private void sendUserErrorMessage(Long userId) {

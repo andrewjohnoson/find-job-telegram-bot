@@ -1,11 +1,8 @@
 package com.zhevlakov.findjobtelegrambot.keyboard;
 
 import com.pengrad.telegrambot.model.request.*;
-import com.zhevlakov.findjobtelegrambot.callback.code.QueryCode;
-import com.zhevlakov.findjobtelegrambot.fsm.FsmStep;
+import com.zhevlakov.findjobtelegrambot.callback.code.userquery.QueryCode;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class KeyboardGenerator {
@@ -35,11 +32,16 @@ public class KeyboardGenerator {
         var finalButtons = settings.getFinalButtons();
 
         InlineKeyboardButton[] buttons = finalButtons.stream()
-                .map(content ->
-                        new InlineKeyboardButton(content.name())
-                                .callbackData(
-                                        settings.inlineCode() + ":" + content.code()
-                                ))
+                .map(content -> {
+                    var newButton =  new InlineKeyboardButton(content.name())
+                            .callbackData(
+                                    settings.inlineCode() + ":" + content.code()
+                            );
+                    if (content.url() != null) {
+                        newButton.url(content.url());
+                    }
+                    return newButton;
+                })
                 .toArray(InlineKeyboardButton[]::new);
 
         int buttonsPerRow = 3;

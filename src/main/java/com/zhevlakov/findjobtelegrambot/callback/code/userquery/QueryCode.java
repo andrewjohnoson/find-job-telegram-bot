@@ -1,14 +1,12 @@
-package com.zhevlakov.findjobtelegrambot.callback.code;
+package com.zhevlakov.findjobtelegrambot.callback.code.userquery;
 
-public enum WorkFormatCode {
-    IN_PERSON("На месте работодателя", "in_person"),
-    REMOTE("Удалённо", "remote"),
-    HYBRID("Гибрид", "hybrid");
+public enum QueryCode {
+    NEXT("Продолжить", "next");
 
     private final String buttonText;
     private final String expCode;
 
-    WorkFormatCode(
+    QueryCode(
             String buttonText,
             String expCode
     ) {

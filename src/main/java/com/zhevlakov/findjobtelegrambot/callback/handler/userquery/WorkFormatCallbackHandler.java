@@ -1,11 +1,11 @@
-package com.zhevlakov.findjobtelegrambot.callback.handler;
+package com.zhevlakov.findjobtelegrambot.callback.handler.userquery;
 
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackContent;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackHandler;
-import com.zhevlakov.findjobtelegrambot.callback.code.QueryCode;
-import com.zhevlakov.findjobtelegrambot.callback.code.WorkFormatCode;
-import com.zhevlakov.findjobtelegrambot.fsm.FsmStateCode;
+import com.zhevlakov.findjobtelegrambot.callback.code.userquery.QueryCode;
+import com.zhevlakov.findjobtelegrambot.callback.code.userquery.WorkFormatCode;
+import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
 import com.zhevlakov.findjobtelegrambot.fsm.QueryFsmWizardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class WorkFormatCallbackHandler implements CallbackHandler {
     }
 
     @Override
-    public FsmStateCode queryCode() {
-        return FsmStateCode.ASK_WORK_FORMAT;
+    public InlineDataCode queryCode() {
+        return InlineDataCode.ASK_WORK_FORMAT;
     }
 }

@@ -1,7 +1,8 @@
 package com.zhevlakov.findjobtelegrambot.fsm.steps;
 
-import com.zhevlakov.findjobtelegrambot.callback.code.EmploymentTypeCode;
-import com.zhevlakov.findjobtelegrambot.callback.code.QueryCode;
+import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
+import com.zhevlakov.findjobtelegrambot.callback.code.userquery.EmploymentTypeCode;
+import com.zhevlakov.findjobtelegrambot.callback.code.userquery.QueryCode;
 import com.zhevlakov.findjobtelegrambot.fsm.*;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
@@ -59,16 +60,16 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
         return List.of(
-                new KeyboardButtonContent(EmploymentTypeCode.FULL.getButtonText(), EmploymentTypeCode.FULL.getEmplCode()),
-                new KeyboardButtonContent(EmploymentTypeCode.PART.getButtonText(), EmploymentTypeCode.PART.getEmplCode()),
-                new KeyboardButtonContent(EmploymentTypeCode.TRAINEE.getButtonText(), EmploymentTypeCode.TRAINEE.getEmplCode()),
-                new KeyboardButtonContent(QueryCode.NEXT.getButtonText(), QueryCode.NEXT.getExpCode())
+                KeyboardButtonContent.standardButton(EmploymentTypeCode.FULL.getButtonText(), EmploymentTypeCode.FULL.getEmplCode()),
+                KeyboardButtonContent.standardButton(EmploymentTypeCode.PART.getButtonText(), EmploymentTypeCode.PART.getEmplCode()),
+                KeyboardButtonContent.standardButton(EmploymentTypeCode.TRAINEE.getButtonText(), EmploymentTypeCode.TRAINEE.getEmplCode()),
+                KeyboardButtonContent.standardButton(QueryCode.NEXT.getButtonText(), QueryCode.NEXT.getExpCode())
         );
     }
 
     @Override
-    public FsmStateCode inlineDataCode() {
-        return FsmStateCode.ASK_EMPLOYMENT;
+    public InlineDataCode inlineDataCode() {
+        return InlineDataCode.ASK_EMPLOYMENT;
     }
 
     @Override
@@ -79,7 +80,7 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
                 .map(button -> {
                     var newText = query.getEmploymentTypeList().contains(button.name()) ?
                             "✅" + button.name() : button.name();
-                    return new KeyboardButtonContent(newText, button.code()) ;
+                    return KeyboardButtonContent.standardButton(newText, button.code()) ;
                 })
                 .toList();
     }

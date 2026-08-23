@@ -10,16 +10,21 @@ public class CallbackMapper {
         return new CallbackContent(
                 callbackQuery.from().id(),
                 data,
-                extractQueryStateCode(data),
-                extractCode(data)
+                extractInlineDataCode(data),
+                extractCode(data),
+                extractAdditionalId(data)
         );
     }
 
-    private String extractQueryStateCode(String data) {
+    private String extractInlineDataCode(String data) {
         return data.substring(0, data.indexOf(':'));
     }
 
     private String extractCode(String data) {
         return data.substring(data.indexOf(':') + 1);
+    }
+
+    private Long extractAdditionalId(String data) {
+        return data.contains("_") ? Long.getLong(data.substring(data.indexOf('_') + 1)) : null;
     }
 }

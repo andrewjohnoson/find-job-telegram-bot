@@ -1,4 +1,4 @@
-package com.zhevlakov.findjobtelegrambot.callback.code;
+package com.zhevlakov.findjobtelegrambot.callback.code.userquery;
 
 public enum ExperienceCode {
     NO_EXP("Без опыта" ,"0"),
