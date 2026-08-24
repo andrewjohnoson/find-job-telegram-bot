@@ -7,8 +7,7 @@ import com.zhevlakov.findjobtelegrambot.bot.TelegramMessageSenderService;
 import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardGenerator;
-import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardProvider;
-import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardSettings;
+import com.zhevlakov.findjobtelegrambot.keyboard.provider.VacancyKeyboardProvider;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancy;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancyService;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancySearchFilter;
@@ -21,7 +20,7 @@ import java.util.List;
 @Component
 public class TestProvider {
     private final UserVacancyService userVacancyService;
-    private final TestKeyboardProvider keyboardProvider;
+    private final VacancyKeyboardProvider keyboardProvider;
     private final KeyboardGenerator keyboardGenerator;
     private final Logger log = LoggerFactory.getLogger(TestProvider.class);
     private final TelegramMessageSenderService telegramMessageSenderService;
@@ -29,7 +28,7 @@ public class TestProvider {
 
     public TestProvider(
             UserVacancyService userVacancyService,
-            TestKeyboardProvider keyboardProvider,
+            VacancyKeyboardProvider keyboardProvider,
             KeyboardGenerator keyboardGenerator,
             TelegramMessageSenderService telegramMessageSenderService,
             BotResponseMapper botResponseMapper
@@ -47,7 +46,7 @@ public class TestProvider {
                 null
         );
 
-        List<UserVacancy> vacancies = userVacancyService.getUserVacanciesByFilter(filter, userId);
+        List<UserVacancy> vacancies = userVacancyService.getVisibleUserVacanciesByFilter(filter, userId);
 
         List<BotResponse> botResponseList = vacancies.stream()
                 .map(vacancy -> {
@@ -55,13 +54,13 @@ public class TestProvider {
                     var url = vacancy.getVacancy().getUrl();
 
                     List<KeyboardButtonContent> buttonList = List.of(
-                            KeyboardButtonContent.urlButton("Перейти",
-                                    InlineDataCode.VACANCY_CLICK.getInlineButtonCode() + "_" + vacancyId,
+                            KeyboardButtonContent.urlButton(InlineDataCode.VACANCY_CLICK.buttonText(),
+                                    InlineDataCode.VACANCY_CLICK.inlineButtonCode() + "_" + vacancyId,
                                     url),
-                            KeyboardButtonContent.standardButton("В избранное",
-                                    InlineDataCode.VACANCY_FAVOURITE.getInlineButtonCode() + "_" + vacancyId),
-                            KeyboardButtonContent.standardButton("Не показывать",
-                                    InlineDataCode.VACANCY_HIDE.getInlineButtonCode() + "_" + vacancyId)
+                            KeyboardButtonContent.standardButton(InlineDataCode.VACANCY_FAVOURITE.buttonText(),
+                                    InlineDataCode.VACANCY_FAVOURITE.inlineButtonCode() + "_" + vacancyId),
+                            KeyboardButtonContent.standardButton(InlineDataCode.VACANCY_HIDE.buttonText(),
+                                    InlineDataCode.VACANCY_HIDE.inlineButtonCode() + "_" + vacancyId)
                     );
 
                     keyboardProvider.setButtonList(buttonList);
@@ -76,24 +75,5 @@ public class TestProvider {
                         .toList();
 
         telegramMessageSenderService.sendMessage(requestList);
-    }
-}
-
-@Component
-class TestKeyboardProvider implements KeyboardProvider {
-    private List<KeyboardButtonContent> buttonList;
-
-    public void setButtonList(List<KeyboardButtonContent> buttonList) {
-        this.buttonList = buttonList;
-    }
-
-    @Override
-    public KeyboardSettings getKeyboardSettings(Long chatId) {
-
-        return new KeyboardSettings(
-                buttonList,
-                null,
-                InlineDataCode.VACANCY.getInlineButtonCode()
-        );
     }
 }

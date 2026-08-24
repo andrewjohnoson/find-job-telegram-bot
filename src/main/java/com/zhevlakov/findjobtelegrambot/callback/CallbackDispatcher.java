@@ -26,7 +26,7 @@ public class CallbackDispatcher {
     ) {
         this.callbackHandlersMap = callbackHandlers.stream()
                 .collect(Collectors.toMap(
-                        callbackHandler -> callbackHandler.queryCode().getInlineButtonCode(),
+                        callbackHandler -> callbackHandler.queryCode().inlineButtonCode(),
                         Function.identity(),
                         (existing, _) -> existing,
                         HashMap::new

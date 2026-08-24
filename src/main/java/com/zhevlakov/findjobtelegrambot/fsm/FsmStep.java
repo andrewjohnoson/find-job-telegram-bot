@@ -30,7 +30,7 @@ public interface FsmStep extends KeyboardProvider {
         return new KeyboardSettings(
                 this.nextKeyboardButtons(),
                 (buttons) -> this.getFormattedButtons(buttons, chatId),
-                this.inlineDataCode().getInlineButtonCode()
+                this.inlineDataCode().inlineButtonCode()
         );
     }
 }

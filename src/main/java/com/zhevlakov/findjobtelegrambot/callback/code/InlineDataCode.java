@@ -1,24 +1,34 @@
 package com.zhevlakov.findjobtelegrambot.callback.code;
 
 public enum InlineDataCode {
-    ASK_EMPLOYMENT("empl"),
-    ASK_EXPERIENCE("exp"),
-    ASK_WORK_FORMAT("wft"),
-    NEXT("next"),
+    ASK_EMPLOYMENT("empl", null),
+    ASK_EXPERIENCE("exp", null),
+    ASK_WORK_FORMAT("wft", null),
+    NEXT("next", null),
 
     // vacancy buttons
-    VACANCY("vac"),
-    VACANCY_CLICK("cl"),
-    VACANCY_FAVOURITE("fav"),
-    VACANCY_HIDE("hid");
+    VACANCY("vac", null),
+    VACANCY_CLICK("cl", "Перейти"),
+    VACANCY_FAVOURITE("fav", "В избранное"),
+    VACANCY_HIDE("hid", "Скрыть"),
+    VACANCY_UNCOVER("uncov", "Показать");
 
     private final String inlineButtonCode;
+    private final String buttonText;
 
-    InlineDataCode(String inlineButtonCode) {
+    InlineDataCode(
+            String inlineButtonCode,
+            String buttonText
+    ) {
         this.inlineButtonCode = inlineButtonCode;
+        this.buttonText = buttonText;
     }
 
-    public String getInlineButtonCode() {
+    public String inlineButtonCode() {
         return inlineButtonCode;
+    }
+
+    public String buttonText() {
+        return buttonText;
     }
 }

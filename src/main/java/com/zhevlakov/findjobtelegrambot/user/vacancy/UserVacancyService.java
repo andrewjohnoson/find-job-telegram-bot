@@ -18,18 +18,22 @@ public class UserVacancyService {
         this.userVacancyRepository = userVacancyRepository;
     }
 
-    public List<UserVacancy> getUserVacanciesByFilter(
+    public List<UserVacancy> getVisibleUserVacanciesByFilter(
             VacancySearchFilter filter,
             Long userId
     ) {
-        int pageSize = filter.pageSize() != null ? filter.pageSize() : PAGE_SIZE;
-        int pageNum = filter.pageNum() != null ? filter.pageNum() : PAGE_NUM;
-
-        Pageable pager = Pageable
-                .ofSize(pageSize)
-                .withPage(pageNum);
+        Pageable pager = getPager(filter);
 
         return userVacancyRepository.findAllVisibleByUser(userId, VacancyStatus.HIDDEN, pager);
+    }
+
+    public List<UserVacancy> getUserVacanciesByStatus(
+            VacancySearchFilter filter,
+            Long userId
+    ) {
+        Pageable pager = getPager(filter);
+
+        return userVacancyRepository.findAllByUserAndStatus(userId, VacancyStatus.HIDDEN, pager);
     }
 
     public UserVacancy changeVacancyStatus(
@@ -39,5 +43,15 @@ public class UserVacancyService {
         var vacancy = userVacancyRepository.getUserVacancyByVacancy_Id(vacancyId);
         vacancy.setStatus(status);
         return vacancy;
+    }
+
+    private Pageable getPager(VacancySearchFilter filter) {
+        int pageSize = filter.pageSize() != null ? filter.pageSize() : PAGE_SIZE;
+        int pageNum = filter.pageNum() != null ? filter.pageNum() : PAGE_NUM;
+
+        return Pageable
+                .ofSize(pageSize)
+                .withPage(pageNum);
+
     }
 }

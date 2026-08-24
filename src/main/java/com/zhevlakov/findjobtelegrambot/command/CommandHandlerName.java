@@ -5,6 +5,8 @@ public enum CommandHandlerName {
     CANCEL("/cancel"),
     TEST("/test"),
     SHOW_CANCELLED("/show_cancelled"),
+    COMMANDS("/commands"),
+    MENU("/menu"),
     NEW_QUERY("Новый запрос"),
     CURRENT_QUERY("Показать текущий запрос"),
     FAVOURITE("Избранное"),
@@ -16,7 +18,7 @@ public enum CommandHandlerName {
         this.commandName = commandName;
     }
 
-    public String getCommandName() {
+    public String commandName() {
         return commandName;
     }
 }

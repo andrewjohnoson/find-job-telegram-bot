@@ -22,6 +22,20 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
             Pageable pager
         );
 
+    @Query(
+            """
+        select uv from UserVacancy uv
+        left join fetch uv.vacancy
+        where uv.user.chatId = :user_id
+                and uv.status = :status
+        """
+    )
+    List<UserVacancy> findAllByUserAndStatus(
+            @Param("user_id") Long userId,
+            @Param("status") VacancyStatus status,
+            Pageable pager
+    );
+
     @Transactional
     UserVacancy getUserVacancyByVacancy_Id(Long vacancyId);
 }

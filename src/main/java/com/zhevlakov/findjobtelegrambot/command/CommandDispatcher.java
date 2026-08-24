@@ -24,7 +24,7 @@ public class CommandDispatcher {
     ) {
         this.commandHandlersMap = commandHandlers.stream()
                 .collect(Collectors.toMap(
-                        commandHandler -> commandHandler.getCommandHandlerName().getCommandName(),
+                        commandHandler -> commandHandler.getCommandHandlerName().commandName(),
                         Function.identity(),
                         (existing, replacement) -> existing,
                         HashMap::new
@@ -37,7 +37,7 @@ public class CommandDispatcher {
         var commandValue = message.text();
 
         if (!userService.haveUser(chatId)
-                && !commandValue.equals(CommandHandlerName.START.getCommandName())) {
+                && !commandValue.equals(CommandHandlerName.START.commandName())) {
             return BotResponse.asList(BotResponse.error(chatId, "Данная операция в данный момент не доступна."));
         }
 
