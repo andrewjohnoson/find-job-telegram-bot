@@ -1,4 +1,4 @@
-package com.zhevlakov.findjobtelegrambot.command.handler;
+package com.zhevlakov.findjobtelegrambot.command.handler.vacancy;
 
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.Keyboard;
@@ -12,6 +12,7 @@ import com.zhevlakov.findjobtelegrambot.keyboard.provider.VacancyKeyboardProvide
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancy;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancyService;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancySearchFilter;
+import com.zhevlakov.findjobtelegrambot.vacancy.VacancyStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class ShowCancelledCommandHandler implements CommandHandler {
         );
         var userId = message.chat().id();
 
-        List<UserVacancy> vacancies = userVacancyService.getUserVacanciesByStatus(filter, userId);
+        List<UserVacancy> vacancies = userVacancyService.getUserVacanciesByStatus(filter, userId, VacancyStatus.HIDDEN);
 
         return vacancies.stream()
                 .map(vacancy -> {

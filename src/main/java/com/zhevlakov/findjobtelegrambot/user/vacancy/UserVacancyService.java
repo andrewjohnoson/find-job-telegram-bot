@@ -29,11 +29,12 @@ public class UserVacancyService {
 
     public List<UserVacancy> getUserVacanciesByStatus(
             VacancySearchFilter filter,
-            Long userId
+            Long userId,
+            VacancyStatus status
     ) {
         Pageable pager = getPager(filter);
 
-        return userVacancyRepository.findAllByUserAndStatus(userId, VacancyStatus.HIDDEN, pager);
+        return userVacancyRepository.findAllByUserAndStatus(userId, status, pager);
     }
 
     public UserVacancy changeVacancyStatus(

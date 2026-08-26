@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackDispatcher;
@@ -69,6 +70,11 @@ public class UpdateHandler {
             } else {
                 removeKeyboardFromPrev(callback, response);
             }
+
+            if (response.removePost()) {
+                removePost(callback, response);
+            }
+
             return BotResponse.asList(response);
         }
 
@@ -116,6 +122,16 @@ public class UpdateHandler {
                 var editRequest = new EditMessageText(chatId, messageId, lastText);
                 senderService.changePrevMessage(editRequest);
             }
+        }
+    }
+
+    private void removePost(CallbackQuery callbackQuery, BotResponse response) {
+        var maybeMessage = callbackQuery.maybeInaccessibleMessage();
+        if (maybeMessage instanceof Message message) {
+            var messageId = message.messageId();
+            var chatId = callbackQuery.from().id();
+            var deleteMessage = new DeleteMessage(chatId, messageId);
+            senderService.removeMessage(deleteMessage);
         }
     }
 }

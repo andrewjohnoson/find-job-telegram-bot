@@ -2,6 +2,7 @@ package com.zhevlakov.findjobtelegrambot.bot;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.AbstractSendRequest;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
@@ -37,5 +38,10 @@ public class TelegramMessageSenderService implements MessageSenderService {
     public void changePrevMessage(EditMessageText request) {
         BaseResponse response = bot.execute(request);
         log.info("Is changing successful={}", response.isOk());
+    }
+
+    public void removeMessage(DeleteMessage request) {
+        BaseResponse response = bot.execute(request);
+        log.info("Message was deleted = {}", response.isOk());
     }
 }

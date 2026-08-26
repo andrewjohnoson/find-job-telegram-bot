@@ -8,16 +8,14 @@ import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancyService;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancyStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InFavouriteCallbackHandler implements CallbackHandler {
+public class NotFavouriteCallbackHandler implements CallbackHandler {
     private final UserVacancyService userVacancyService;
-    private final Logger log = LoggerFactory.getLogger(InFavouriteCallbackHandler.class);
+    private final Logger log = LoggerFactory.getLogger(UncoverVacancyCallbackHandler.class);
 
-    @Autowired
-    public InFavouriteCallbackHandler(
+    public NotFavouriteCallbackHandler(
             UserVacancyService userVacancyService
     ) {
         this.userVacancyService = userVacancyService;
@@ -28,14 +26,14 @@ public class InFavouriteCallbackHandler implements CallbackHandler {
         var chatId = callbackContent.chatId();
         var vacancyId = callbackContent.additionalId();
 
-        userVacancyService.changeVacancyStatus(vacancyId, VacancyStatus.FAVOURITE);
+        userVacancyService.changeVacancyStatus(vacancyId, VacancyStatus.FREE);
 
-        log.info("Вакансия vacancyId = {} добавлено в избарнное пользователя chatId = {}", vacancyId, chatId);
-        return BotResponse.post(chatId, "Пост добавлен в избранное.", null, false, false, true);
+        log.info("Вакансия vacancyId = {} не в избранном для пользователя chatId = {}", vacancyId, chatId);
+        return BotResponse.post(chatId, "Пост не в избранном.", null, false, false, true);
     }
 
     @Override
     public InlineDataCode queryCode() {
-        return InlineDataCode.VACANCY_FAVOURITE;
+        return InlineDataCode.VACANCY_NOT_FAVOURITE;
     }
 }

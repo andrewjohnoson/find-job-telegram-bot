@@ -1,4 +1,4 @@
-package com.zhevlakov.findjobtelegrambot.command.handler;
+package com.zhevlakov.findjobtelegrambot.command.handler.utility;
 
 import com.pengrad.telegrambot.model.Message;
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
@@ -17,7 +17,11 @@ public class CommandsCommandHandler implements CommandHandler {
         var userId = message.chat().id();
         StringJoiner sj = new StringJoiner("\n");
         Arrays.stream(CommandHandlerName.values())
-                .forEach(commandName -> sj.add(commandName.commandName()));
+                .forEach(commandName -> {
+                    if (commandName.commandName().startsWith("/")) {
+                        sj.add(commandName.commandName());
+                    }
+                });
         return List.of(BotResponse.post(userId, sj.toString()));
     }
 

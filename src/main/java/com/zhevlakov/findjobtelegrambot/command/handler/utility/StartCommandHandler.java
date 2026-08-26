@@ -1,4 +1,4 @@
-package com.zhevlakov.findjobtelegrambot.command.handler;
+package com.zhevlakov.findjobtelegrambot.command.handler.utility;
 
 import com.pengrad.telegrambot.model.Message;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardGenerator;

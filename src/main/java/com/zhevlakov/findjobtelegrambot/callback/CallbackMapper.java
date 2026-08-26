@@ -21,10 +21,13 @@ public class CallbackMapper {
     }
 
     private String extractCode(String data) {
-        return data.substring(data.indexOf(':') + 1);
+        var hasUnderline = data.contains("_");
+        return hasUnderline ?
+                data.substring(data.indexOf(':') + 1, data.indexOf('_')) :
+                data.substring(data.indexOf(':') + 1);
     }
 
     private Long extractAdditionalId(String data) {
-        return data.contains("_") ? Long.getLong(data.substring(data.indexOf('_') + 1)) : null;
+        return data.contains("_") ? Long.parseLong(data.substring(data.indexOf('_') + 1)) : null;
     }
 }

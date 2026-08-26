@@ -10,6 +10,7 @@ public enum InlineDataCode {
     VACANCY("vac", null),
     VACANCY_CLICK("cl", "Перейти"),
     VACANCY_FAVOURITE("fav", "В избранное"),
+    VACANCY_NOT_FAVOURITE("nfav", "Убрать из избарнных"),
     VACANCY_HIDE("hid", "Скрыть"),
     VACANCY_UNCOVER("uncov", "Показать");
 
