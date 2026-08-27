@@ -8,11 +8,11 @@ public enum InlineDataCode {
 
     // vacancy buttons
     VACANCY("vac", null),
-    VACANCY_CLICK("cl", "Перейти"),
-    VACANCY_FAVOURITE("fav", "В избранное"),
-    VACANCY_NOT_FAVOURITE("nfav", "Убрать из избарнных"),
-    VACANCY_HIDE("hid", "Скрыть"),
-    VACANCY_UNCOVER("uncov", "Показать");
+    VACANCY_CLICK("vac_cl", "Перейти"),
+    VACANCY_FAVOURITE("vac_fav", "В избранное"),
+    VACANCY_NOT_FAVOURITE("vac_nfav", "Убрать из избарнных"),
+    VACANCY_HIDE("vac_hid", "Скрыть"),
+    VACANCY_UNCOVER("vac_uncov", "Показать");
 
     private final String inlineButtonCode;
     private final String buttonText;

@@ -36,6 +36,7 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
             Pageable pager
     );
 
-    @Transactional
     UserVacancy getUserVacancyByVacancy_Id(Long vacancyId);
+
+    boolean existsByIdAndStatus(Long vacancyId, VacancyStatus status);
 }

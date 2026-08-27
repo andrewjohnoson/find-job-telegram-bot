@@ -1,16 +1,14 @@
 package com.zhevlakov.findjobtelegrambot.command.handler.vacancy;
 
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.request.Keyboard;
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
-import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardGenerator;
-import com.zhevlakov.findjobtelegrambot.keyboard.provider.VacancyKeyboardProvider;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancy;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancyService;
+import com.zhevlakov.findjobtelegrambot.vacancy.VacancyResponseFactory;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancySearchFilter;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancyStatus;
 import org.springframework.stereotype.Component;
@@ -20,17 +18,14 @@ import java.util.List;
 @Component
 public class FavouriteCommandHandler implements CommandHandler {
     private final UserVacancyService userVacancyService;
-    private final VacancyKeyboardProvider keyboardProvider;
-    private final KeyboardGenerator keyboardGenerator;
+    private final VacancyResponseFactory vacancyResponseFactory;
 
     public FavouriteCommandHandler(
             UserVacancyService userVacancyService,
-            VacancyKeyboardProvider keyboardProvider,
-            KeyboardGenerator keyboardGenerator
+            VacancyResponseFactory vacancyResponseFactory
     ) {
         this.userVacancyService = userVacancyService;
-        this.keyboardProvider = keyboardProvider;
-        this.keyboardGenerator = keyboardGenerator;
+        this.vacancyResponseFactory = vacancyResponseFactory;
     }
 
     @Override
@@ -43,27 +38,18 @@ public class FavouriteCommandHandler implements CommandHandler {
 
         List<UserVacancy> vacancies = userVacancyService.getUserVacanciesByStatus(filter, userId, VacancyStatus.FAVOURITE);
 
-        return vacancies.stream()
-                .map(vacancy -> {
+        return vacancyResponseFactory.buildResponse(
+                userId,
+                vacancies,
+                vacancy -> {
                     var vacancyId = vacancy.getVacancy().getId();
-                    var url = vacancy.getVacancy().getUrl();
-
-                    List<KeyboardButtonContent> buttonList = List.of(
-                            KeyboardButtonContent.urlButton(
-                                    InlineDataCode.VACANCY_CLICK.buttonText(),
-                                    InlineDataCode.VACANCY_CLICK.inlineButtonCode() + "_" + vacancyId,
-                                    url),
+                    return List.of(
                             KeyboardButtonContent.standardButton(
                                     InlineDataCode.VACANCY_NOT_FAVOURITE.buttonText(),
-                                    InlineDataCode.VACANCY_NOT_FAVOURITE.inlineButtonCode() + "_" + vacancyId)
+                                    InlineDataCode.VACANCY_NOT_FAVOURITE.inlineButtonCode() + "-" + vacancyId)
                     );
-
-                    keyboardProvider.setButtonList(buttonList);
-                    Keyboard keyboard = keyboardGenerator.buildInlineKeyboard(keyboardProvider, userId);
-
-                    return BotResponse.post(userId, vacancy.getVacancy().toString(), keyboard);
-                })
-                .toList();
+                }
+        );
     }
 
     @Override

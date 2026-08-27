@@ -17,17 +17,21 @@ public class CallbackMapper {
     }
 
     private String extractInlineDataCode(String data) {
-        return data.substring(0, data.indexOf(':'));
+        if (!data.contains(":")) {
+            return extractCode(data);
+        }
+        var inlineDataCode = data.substring(0, data.indexOf(':'));
+        return !inlineDataCode.isEmpty() ? inlineDataCode : extractCode(data);
     }
 
     private String extractCode(String data) {
-        var hasUnderline = data.contains("_");
-        return hasUnderline ?
-                data.substring(data.indexOf(':') + 1, data.indexOf('_')) :
+        var hasDash = data.contains("-");
+        return hasDash ?
+                data.substring(data.indexOf(':') + 1, data.indexOf('-')) :
                 data.substring(data.indexOf(':') + 1);
     }
 
     private Long extractAdditionalId(String data) {
-        return data.contains("_") ? Long.parseLong(data.substring(data.indexOf('_') + 1)) : null;
+        return data.contains("-") ? Long.parseLong(data.substring(data.indexOf('-') + 1)) : null;
     }
 }

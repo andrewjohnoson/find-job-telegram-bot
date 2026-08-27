@@ -27,6 +27,10 @@ public class UserVacancyService {
         return userVacancyRepository.findAllVisibleByUser(userId, VacancyStatus.HIDDEN, pager);
     }
 
+    public boolean hasStatus(Long vacancyId, VacancyStatus status) {
+        return userVacancyRepository.existsByIdAndStatus(vacancyId, status);
+    }
+
     public List<UserVacancy> getUserVacanciesByStatus(
             VacancySearchFilter filter,
             Long userId,
@@ -53,6 +57,5 @@ public class UserVacancyService {
         return Pageable
                 .ofSize(pageSize)
                 .withPage(pageNum);
-
     }
 }

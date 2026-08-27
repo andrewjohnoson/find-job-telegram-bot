@@ -73,6 +73,17 @@ public class UserVacancy {
 
     @Override
     public String toString() {
-        return vacancy != null ? vacancy.toString() : null;
+        if (vacancy != null) {
+            if (status.equals(VacancyStatus.FAVOURITE)) {
+                return "⭐" + vacancy;
+            }
+
+            if (status.equals(VacancyStatus.HIDDEN)) {
+                return "\uD83E\uDEE3" + vacancy;
+            }
+
+            return vacancy.toString();
+        }
+        return null;
     }
 }
