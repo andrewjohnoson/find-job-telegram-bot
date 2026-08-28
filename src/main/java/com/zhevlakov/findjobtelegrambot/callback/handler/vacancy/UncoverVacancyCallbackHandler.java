@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UncoverVacancyCallbackHandler implements CallbackHandler {
     private final UserVacancyService userVacancyService;
@@ -22,14 +24,15 @@ public class UncoverVacancyCallbackHandler implements CallbackHandler {
     }
 
     @Override
-    public BotResponse handle(CallbackContent callbackContent) {
+    public List<BotResponse> handle(CallbackContent callbackContent) {
         var chatId = callbackContent.chatId();
         var vacancyId = callbackContent.additionalId();
 
         userVacancyService.changeVacancyStatus(vacancyId, VacancyStatus.FREE);
 
         log.info("Вакансия vacancyId = {} показана для пользователя chatId = {}", vacancyId, chatId);
-        return BotResponse.post(chatId, "Пост вновь показывается.", null, false, false, true);
+        var response = BotResponse.post(chatId, "Пост вновь показывается.", null, false, false, true);
+        return BotResponse.asList(response);
     }
 
     @Override

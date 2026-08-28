@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class InFavouriteCallbackHandler implements CallbackHandler {
     private final UserVacancyService userVacancyService;
@@ -24,18 +26,20 @@ public class InFavouriteCallbackHandler implements CallbackHandler {
     }
 
     @Override
-    public BotResponse handle(CallbackContent callbackContent) {
+    public List<BotResponse> handle(CallbackContent callbackContent) {
         var chatId = callbackContent.chatId();
         var vacancyId = callbackContent.additionalId();
 
         if (userVacancyService.hasStatus(vacancyId, VacancyStatus.FAVOURITE)) {
-            return BotResponse.error(chatId, "Пост уже в избранном.");
+            var errorResponse = BotResponse.error(chatId, "Пост уже в избранном.");
+            return BotResponse.asList(errorResponse);
         }
 
         userVacancyService.changeVacancyStatus(vacancyId, VacancyStatus.FAVOURITE);
 
         log.info("Вакансия vacancyId = {} добавлено в избарнное пользователя chatId = {}", vacancyId, chatId);
-        return BotResponse.post(chatId, "Пост добавлен в избранное.", null, false, false, true);
+        var response = BotResponse.post(chatId, "Пост добавлен в избранное.", null, false, false, true);
+        return BotResponse.asList(response);
     }
 
     @Override

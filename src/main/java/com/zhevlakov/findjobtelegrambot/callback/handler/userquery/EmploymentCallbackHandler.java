@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class EmploymentCallbackHandler implements CallbackHandler {
     private final QueryFsmWizardService wizardService;
@@ -23,28 +25,29 @@ public class EmploymentCallbackHandler implements CallbackHandler {
     }
 
     @Override
-    public BotResponse handle(CallbackContent callbackContent) {
+    public List<BotResponse> handle(CallbackContent callbackContent) {
         var type = callbackContent.code();
         var chatId = callbackContent.chatId();
 
         if (type.equals(EmploymentTypeCode.FULL.getEmplCode())) {
-            return handleFull(chatId);
+            return BotResponse.asList(handleFull(chatId));
         }
 
         if (type.equals(EmploymentTypeCode.PART.getEmplCode())) {
-            return handlePart(chatId);
+            return BotResponse.asList(handlePart(chatId));
         }
 
         if (type.equals(EmploymentTypeCode.TRAINEE.getEmplCode())) {
-            return handleTrainee(chatId);
+            return BotResponse.asList(handleTrainee(chatId));
         }
 
         if (type.equals(QueryCode.NEXT.getExpCode())) {
-            return handleNext(chatId);
+            return BotResponse.asList(handleNext(chatId));
         }
 
         log.error("Не удалось обработать callback, chatId={}", chatId);
-        return BotResponse.error(chatId, "Произошла ошибка.");
+        var errorResponse = BotResponse.error(chatId, "Произошла ошибка.");
+        return BotResponse.asList(errorResponse);
     }
 
     private BotResponse handleFull(Long chatId) {

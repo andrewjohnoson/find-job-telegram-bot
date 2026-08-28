@@ -4,7 +4,8 @@ import com.pengrad.telegrambot.model.request.Keyboard;
 
 import java.util.List;
 
-public record BotResponse(
+public record
+BotResponse(
         Long chatId,
         String text,
         Keyboard keyboard,

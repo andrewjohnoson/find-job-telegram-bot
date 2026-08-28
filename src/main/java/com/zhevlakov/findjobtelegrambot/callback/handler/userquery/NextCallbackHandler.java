@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class NextCallbackHandler implements CallbackHandler {
     private final QueryFsmWizardService wizardService;
@@ -30,7 +32,7 @@ public class NextCallbackHandler implements CallbackHandler {
     }
 
     @Override
-    public BotResponse handle(CallbackContent callbackContent) {
+    public List<BotResponse> handle(CallbackContent callbackContent) {
         var chatId = callbackContent.chatId();
 
         log.info("{}", callbackContent.data());
@@ -39,7 +41,8 @@ public class NextCallbackHandler implements CallbackHandler {
 
         if (!userService.userHaveState(chatId, stateFromCode)) {
             log.warn("Пользователь = {} попытался нажать кнопку для состояния = {}, находясь в ином состоянии", chatId, code);
-            return BotResponse.error(chatId, "Кнопка не откликается.");
+            var errorResponse = BotResponse.error(chatId, "Кнопка не откликается.");
+            return BotResponse.asList(errorResponse);
         }
 
         var user = userService.getUserById(chatId);
@@ -47,10 +50,12 @@ public class NextCallbackHandler implements CallbackHandler {
         if (!userQueryValidator.canKeepPrevPosition(user)) {
             log.error("processChoice: В данный момент должность пользователя = {} не задана, поэтому не можем продолжить. chatId={}",
                     user.getUserTag(), user.getChatId());
-            return BotResponse.error(user.getChatId(), "В данный момент должность не задана, поэтому нельзя продолжить.");
+            var errorResponse = BotResponse.error(user.getChatId(), "В данный момент должность не задана, поэтому нельзя продолжить.");
+            return BotResponse.asList(errorResponse);
         }
 
-        return wizardService.processChoice(chatId, null);
+        var response = wizardService.processChoice(chatId, null);
+        return BotResponse.asList(response);
     }
 
     @Override

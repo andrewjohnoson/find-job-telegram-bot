@@ -12,7 +12,8 @@ public enum InlineDataCode {
     VACANCY_FAVOURITE("vac_fav", "В избранное"),
     VACANCY_NOT_FAVOURITE("vac_nfav", "Убрать из избарнных"),
     VACANCY_HIDE("vac_hid", "Скрыть"),
-    VACANCY_UNCOVER("vac_uncov", "Показать");
+    VACANCY_UNCOVER("vac_uncov", "Показать"),
+    VACANCY_LOAD_MORE("load_more", "Показать ещё ⬇️");
 
     private final String inlineButtonCode;
     private final String buttonText;

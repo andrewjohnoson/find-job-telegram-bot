@@ -20,9 +20,9 @@ public class TestCommandHandler implements CommandHandler {
     @Override
     public List<BotResponse> handle(Message message) {
         var userId = message.chat().id();
-        testProvider.fetchVacancies(userId);
+        return testProvider.fetchVacancies(userId);
 
-        return BotResponse.asList(BotResponse.post(userId, "Тест"));
+//        return BotResponse.asList(BotResponse.post(userId, "Тест"));
     }
 
     @Override

@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ExperienceCallbackHandler implements CallbackHandler {
     private final Logger log = LoggerFactory.getLogger(ExperienceCallbackHandler.class);
@@ -23,32 +25,33 @@ public class ExperienceCallbackHandler implements CallbackHandler {
     }
 
     @Override
-    public BotResponse handle(CallbackContent callbackContent) {
+    public List<BotResponse> handle(CallbackContent callbackContent) {
         var type = callbackContent.code();
         var chatId = callbackContent.chatId();
 
         if (type.equals(ExperienceCode.NO_EXP.getExpCode())) {
-            return handleNoExp(chatId);
+            return BotResponse.asList(handleNoExp(chatId));
         }
 
         if (type.equals(ExperienceCode.ONE_TO_THREE.getExpCode())) {
-            return handleOneThree(chatId);
+            return BotResponse.asList(handleOneThree(chatId));
         }
 
         if (type.equals(ExperienceCode.THREE_TO_SIX.getExpCode())) {
-            return handleThreeSix(chatId);
+            return BotResponse.asList(handleThreeSix(chatId));
         }
 
         if (type.equals(ExperienceCode.SIX_AND_MORE.getExpCode())) {
-            return handleSixMore(chatId);
+            return BotResponse.asList(handleSixMore(chatId));
         }
 
         if (type.equals(QueryCode.NEXT.getExpCode())) {
-            return handleNext(chatId);
+            return BotResponse.asList(handleNext(chatId));
         }
 
         log.error("Не удалось обработать callback, chatId={}", chatId);
-        return BotResponse.error(chatId, "Произошла ошибка.");
+        var errorResponse = BotResponse.error(chatId, "Произошла ошибка.");
+        return BotResponse.asList(errorResponse);
     }
 
     private BotResponse handleNoExp(Long chatId) {

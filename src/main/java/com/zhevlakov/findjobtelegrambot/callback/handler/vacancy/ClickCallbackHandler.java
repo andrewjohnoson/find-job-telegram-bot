@@ -6,10 +6,12 @@ import com.zhevlakov.findjobtelegrambot.callback.CallbackHandler;
 import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ClickCallbackHandler implements CallbackHandler {
     @Override
-    public BotResponse handle(CallbackContent callbackContent) {
+    public List<BotResponse> handle(CallbackContent callbackContent) {
         return null;
     }
 

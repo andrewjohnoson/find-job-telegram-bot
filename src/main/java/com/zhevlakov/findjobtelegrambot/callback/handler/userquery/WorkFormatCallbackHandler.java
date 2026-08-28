@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class WorkFormatCallbackHandler implements CallbackHandler {
     private final QueryFsmWizardService wizardService;
@@ -23,28 +25,29 @@ public class WorkFormatCallbackHandler implements CallbackHandler {
     }
 
     @Override
-    public BotResponse handle(CallbackContent callbackContent) {
+    public List<BotResponse> handle(CallbackContent callbackContent) {
         var type = callbackContent.code();
         var chatId = callbackContent.chatId();
 
         if (type.equals(WorkFormatCode.IN_PERSON.getExpCode())) {
-            return handleInPerson(chatId);
+            return BotResponse.asList(handleInPerson(chatId));
         }
 
         if (type.equals(WorkFormatCode.REMOTE.getExpCode())) {
-            return handleRemote(chatId);
+            return BotResponse.asList(handleRemote(chatId));
         }
 
         if (type.equals(WorkFormatCode.HYBRID.getExpCode())) {
-            return handleHybrid(chatId);
+            return BotResponse.asList(handleHybrid(chatId));
         }
 
         if (type.equals(QueryCode.NEXT.getExpCode())) {
-            return handleNext(chatId);
+            return BotResponse.asList(handleNext(chatId));
         }
 
         log.error("Не удалось обработать callback, chatId={}", chatId);
-        return BotResponse.error(chatId, "Произошла ошибка.");
+        var errorResponse = BotResponse.error(chatId, "Произошла ошибка.");
+        return BotResponse.asList(errorResponse);
     }
 
     private BotResponse handleInPerson(Long chatId) {

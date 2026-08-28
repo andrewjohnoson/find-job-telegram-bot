@@ -34,14 +34,15 @@ public class CallbackDispatcher {
         this.callbackMapper = callbackMapper;
     }
 
-    public BotResponse processCallback(CallbackQuery callback) {
+    public List<BotResponse> processCallback(CallbackQuery callback) {
         var callbackContent = callbackMapper.toContent(callback);
         log.info("processCallback, {}", callbackContent);
 
         var handler = callbackHandlersMap.get(callbackContent.inlineDataCode());
         if (handler == null) {
             log.error("Нажата inline-кнопка, которой нет в списке допустимых комманд. Чат={}", callbackContent.chatId());
-            return BotResponse.error(callbackContent.chatId(), "Не существует кнопки с таким кодом.");
+            var errorResponse = BotResponse.error(callbackContent.chatId(), "Не существует кнопки с таким кодом.");
+            return BotResponse.asList(errorResponse);
         }
 
         return handler.handle(callbackContent);

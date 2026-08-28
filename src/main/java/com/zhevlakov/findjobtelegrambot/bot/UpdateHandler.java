@@ -7,6 +7,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.zhevlakov.findjobtelegrambot.callback.CallbackContent;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackDispatcher;
 import com.zhevlakov.findjobtelegrambot.command.CommandDispatcher;
 import com.zhevlakov.findjobtelegrambot.fsm.FsmDispatcher;
@@ -65,17 +66,10 @@ public class UpdateHandler {
         if (update.callbackQuery() != null) {
             var callback = update.callbackQuery();
             var response = callbackDispatcher.processCallback(callback);
-            if (response.updatePrevKeyboard()) {
-                updatePrevKeyboard(callback, response);
-            } else {
-                removeKeyboardFromPrev(callback, response);
-            }
 
-            if (response.removePost()) {
-                removePost(callback, response);
-            }
+            updatingOrRemovingKeyboard(response, callback);
 
-            return BotResponse.asList(response);
+            return response;
         }
 
         if (update.message() != null) {
@@ -115,7 +109,10 @@ public class UpdateHandler {
         var maybeMessage = callbackQuery.maybeInaccessibleMessage();
         if (maybeMessage instanceof Message message) {
             var keyboard = message.replyMarkup();
-            if (keyboard != null && response.removeKeyboard()) {
+
+            boolean shouldRemove = (response == null) || response.removeKeyboard();
+
+            if (keyboard != null && shouldRemove) {
                 var lastText = message.text();
                 var messageId = message.messageId();
                 var chatId = callbackQuery.from().id();
@@ -123,6 +120,23 @@ public class UpdateHandler {
                 senderService.changePrevMessage(editRequest);
             }
         }
+    }
+
+    private void updatingOrRemovingKeyboard(List<BotResponse> response, CallbackQuery callback) {
+        if (!response.isEmpty()) {
+                BotResponse firstResponse = response.getFirst();
+                if (firstResponse.updatePrevKeyboard()) {
+                    updatePrevKeyboard(callback, firstResponse);
+                } else {
+                    removeKeyboardFromPrev(callback, firstResponse);
+                }
+
+                if (firstResponse.removePost()) {
+                    removePost(callback, firstResponse);
+                }
+            } else {
+                removeKeyboardFromPrev(callback, null);
+            }
     }
 
     private void removePost(CallbackQuery callbackQuery, BotResponse response) {
