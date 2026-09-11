@@ -36,7 +36,13 @@ public class CurrentQueryCommandHandler implements CommandHandler {
         }
 
         var query = queryService.getByChatId(chatId);
-        return BotResponse.asList(BotResponse.post(chatId, query.toString()));
+
+        String queryText = query.toString();
+        if (queryText == null || queryText.isEmpty() || queryText.equals(".")) {
+            return BotResponse.asList(BotResponse.post(chatId, "Пользователь не имеет запроса"));
+        }
+
+        return BotResponse.asList(BotResponse.post(chatId, queryText));
     }
 
     @Override

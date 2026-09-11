@@ -3,9 +3,7 @@ package com.zhevlakov.findjobtelegrambot.user.query;
 import com.zhevlakov.findjobtelegrambot.user.UserEntity;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 
 @Entity
 @Table(name = "user_query")
@@ -23,7 +21,7 @@ public class UserQuery {
             joinColumns = @JoinColumn(name = "user_query_id")
     )
     @Column(name = "experience")
-    private List<String> experienceList = new ArrayList<>();
+    private Set<String> experienceList = new HashSet<>();
 
     @Column(name = "city")
     private String city;
@@ -34,7 +32,7 @@ public class UserQuery {
             joinColumns = @JoinColumn(name = "user_query_id")
     )
     @Column(name = "work_format")
-    private List<String> workFormatList = new ArrayList<>();
+    private Set<String> workFormatList = new HashSet<>();
 
     @Column(name = "salary")
     private String salary;
@@ -45,7 +43,7 @@ public class UserQuery {
             joinColumns = @JoinColumn(name = "user_query_id")
     )
     @Column(name = "employment_type")
-    private List<String> employmentTypeList = new ArrayList<>();
+    private Set<String> employmentTypeList = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_chat_id", referencedColumnName = "chat_id")
@@ -88,27 +86,27 @@ public class UserQuery {
         this.userEntity = userEntity;
     }
 
-    public List<String> getExperienceList() {
+    public Set<String> getExperienceList() {
         return experienceList;
     }
 
-    public void setExperienceList(List<String> experienceList) {
+    public void setExperienceList(Set<String> experienceList) {
         this.experienceList = experienceList;
     }
 
-    public List<String> getWorkFormatList() {
+    public Set<String> getWorkFormatList() {
         return workFormatList;
     }
 
-    public void setWorkFormatList(List<String> workFormatList) {
+    public void setWorkFormatList(Set<String> workFormatList) {
         this.workFormatList = workFormatList;
     }
 
-    public List<String> getEmploymentTypeList() {
+    public Set<String> getEmploymentTypeList() {
         return employmentTypeList;
     }
 
-    public void setEmploymentTypeList(List<String> employmentTypeList) {
+    public void setEmploymentTypeList(Set<String> employmentTypeList) {
         this.employmentTypeList = employmentTypeList;
     }
 
@@ -133,9 +131,7 @@ public class UserQuery {
     }
 
     public void addEmploymentType(String input) {
-        if (!employmentTypeList.contains(input)) {
-            employmentTypeList.add(input);
-        }
+        employmentTypeList.add(input);
     }
 
     public void removeEmploymentType(String input) {
@@ -143,9 +139,7 @@ public class UserQuery {
     }
 
     public void addWorkFormat(String input) {
-        if (!workFormatList.contains(input)) {
-            workFormatList.add(input);
-        }
+        workFormatList.add(input);
     }
 
     public void removeWorkFormat(String input) {
@@ -153,15 +147,12 @@ public class UserQuery {
     }
 
     public void addExperience(String input) {
-        if (!experienceList.contains(input)) {
-            experienceList.add(input);
-        }
+        experienceList.add(input);
     }
 
     public void removeExperience(String input) {
         experienceList.remove(input);
     }
-
 
     @Override
     public String toString() {

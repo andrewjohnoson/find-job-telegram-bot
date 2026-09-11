@@ -7,7 +7,6 @@ public enum InlineDataCode {
     NEXT("next", null),
 
     // vacancy buttons
-    VACANCY("vac", null),
     VACANCY_CLICK("vac_cl", "Перейти"),
     VACANCY_FAVOURITE("vac_fav", "В избранное"),
     VACANCY_NOT_FAVOURITE("vac_nfav", "Убрать из избарнных"),

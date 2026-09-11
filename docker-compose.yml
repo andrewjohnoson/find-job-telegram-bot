@@ -11,5 +11,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
 
+  bot:
+    image: mcr.microsoft.com/playwright/java:v1.62.0-noble
+    container_name: find-job-telegram-bot
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: ./gradlew run --no-daemon
+
+
 volumes:
   postgres_data:
