@@ -2,13 +2,14 @@ package com.zhevlakov.findjobtelegrambot.fsm.steps;
 
 import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
 import com.zhevlakov.findjobtelegrambot.callback.code.userquery.QueryCode;
-import com.zhevlakov.findjobtelegrambot.callback.code.userquery.WorkFormatCode;
 import com.zhevlakov.findjobtelegrambot.fsm.*;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
+import com.zhevlakov.findjobtelegrambot.vacancy.query.converter.WorkFormat;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -30,10 +31,16 @@ public class AskWorkFormatFsmStep implements FsmStep {
             UserQuery query,
             String input
     ) {
-        if (!query.getWorkFormatList().contains(input)) {
-            query.addWorkFormat(input);
+        if (QueryCode.NEXT.getExpCode().equals(input)) {
+            return;
+        }
+
+        WorkFormat selectedWorkForm = WorkFormat.valueOf(input);
+
+        if (!query.getWorkFormatList().contains(selectedWorkForm)) {
+            query.addWorkFormat(selectedWorkForm);
         } else {
-            query.removeWorkFormat(input);
+            query.removeWorkFormat(selectedWorkForm);
         }
     }
 
@@ -59,12 +66,9 @@ public class AskWorkFormatFsmStep implements FsmStep {
 
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
-        return List.of(
-                KeyboardButtonContent.standardButton(WorkFormatCode.IN_PERSON.getButtonText(), WorkFormatCode.IN_PERSON.getExpCode()),
-                KeyboardButtonContent.standardButton(WorkFormatCode.REMOTE.getButtonText(), WorkFormatCode.IN_PERSON.getExpCode()),
-                KeyboardButtonContent.standardButton(WorkFormatCode.HYBRID.getButtonText(), WorkFormatCode.HYBRID.getExpCode()),
-                KeyboardButtonContent.standardButton(QueryCode.NEXT.getButtonText(), QueryCode.NEXT.getExpCode())
-        );
+        return Arrays.stream(WorkFormat.values())
+                .map(workFmt -> KeyboardButtonContent.standardButton(workFmt.getUiText(), workFmt.name()))
+                .toList();
     }
 
     @Override
@@ -78,7 +82,13 @@ public class AskWorkFormatFsmStep implements FsmStep {
 
         return buttons.stream()
                 .map(button -> {
-                    var newText = query.getWorkFormatList().contains(button.name()) ?
+                    if (button.code().equals(QueryCode.NEXT.getExpCode())) {
+                        return button;
+                    }
+
+                    WorkFormat workFmt = WorkFormat.valueOf(button.code());
+
+                    var newText = query.getWorkFormatList().contains(workFmt) ?
                             "✅" + button.name() : button.name();
                     return KeyboardButtonContent.standardButton(newText, button.code()) ;
                 })

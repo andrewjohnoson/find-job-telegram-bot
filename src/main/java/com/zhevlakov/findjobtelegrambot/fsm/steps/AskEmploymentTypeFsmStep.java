@@ -1,14 +1,15 @@
 package com.zhevlakov.findjobtelegrambot.fsm.steps;
 
 import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
-import com.zhevlakov.findjobtelegrambot.callback.code.userquery.EmploymentTypeCode;
 import com.zhevlakov.findjobtelegrambot.callback.code.userquery.QueryCode;
 import com.zhevlakov.findjobtelegrambot.fsm.*;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
+import com.zhevlakov.findjobtelegrambot.vacancy.query.converter.EmploymentType;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -30,10 +31,16 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
             UserQuery query,
             String input
     ) {
-        if (!query.getEmploymentTypeList().contains(input)) {
-            query.addEmploymentType(input);
+        if (QueryCode.NEXT.getExpCode().equals(input)) {
+            return;
+        }
+
+        EmploymentType selectedEmplType = EmploymentType.valueOf(input);
+
+        if (!query.getEmploymentTypeList().contains(selectedEmplType)) {
+            query.addEmploymentType(selectedEmplType);
         } else {
-            query.removeEmploymentType(input);
+            query.removeEmploymentType(selectedEmplType);
         }
     }
 
@@ -59,12 +66,9 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
 
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
-        return List.of(
-                KeyboardButtonContent.standardButton(EmploymentTypeCode.FULL.getButtonText(), EmploymentTypeCode.FULL.getEmplCode()),
-                KeyboardButtonContent.standardButton(EmploymentTypeCode.PART.getButtonText(), EmploymentTypeCode.PART.getEmplCode()),
-                KeyboardButtonContent.standardButton(EmploymentTypeCode.TRAINEE.getButtonText(), EmploymentTypeCode.TRAINEE.getEmplCode()),
-                KeyboardButtonContent.standardButton(QueryCode.NEXT.getButtonText(), QueryCode.NEXT.getExpCode())
-        );
+        return Arrays.stream(EmploymentType.values())
+                .map(empl -> KeyboardButtonContent.standardButton(empl.getUiText(), empl.name()))
+                .toList();
     }
 
     @Override
@@ -78,7 +82,13 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
 
         return buttons.stream()
                 .map(button -> {
-                    var newText = query.getEmploymentTypeList().contains(button.name()) ?
+                    if (button.code().equals(QueryCode.NEXT.getExpCode())) {
+                        return button;
+                    }
+
+                    EmploymentType empl = EmploymentType.valueOf(button.code());
+
+                    var newText = query.getEmploymentTypeList().contains(empl) ?
                             "✅" + button.name() : button.name();
                     return KeyboardButtonContent.standardButton(newText, button.code()) ;
                 })

@@ -1,9 +1,13 @@
 package com.zhevlakov.findjobtelegrambot.user.query;
 
 import com.zhevlakov.findjobtelegrambot.user.UserEntity;
+import com.zhevlakov.findjobtelegrambot.vacancy.query.converter.EmploymentType;
+import com.zhevlakov.findjobtelegrambot.vacancy.query.converter.Experience;
+import com.zhevlakov.findjobtelegrambot.vacancy.query.converter.WorkFormat;
 import jakarta.persistence.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "user_query")
@@ -21,7 +25,8 @@ public class UserQuery {
             joinColumns = @JoinColumn(name = "user_query_id")
     )
     @Column(name = "experience")
-    private Set<String> experienceList = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    private Set<Experience> experienceList = new HashSet<>();
 
     @Column(name = "city")
     private String city;
@@ -32,7 +37,8 @@ public class UserQuery {
             joinColumns = @JoinColumn(name = "user_query_id")
     )
     @Column(name = "work_format")
-    private Set<String> workFormatList = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    private Set<WorkFormat> workFormatList = new HashSet<>();
 
     @Column(name = "salary")
     private String salary;
@@ -43,7 +49,8 @@ public class UserQuery {
             joinColumns = @JoinColumn(name = "user_query_id")
     )
     @Column(name = "employment_type")
-    private Set<String> employmentTypeList = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    private Set<EmploymentType> employmentTypeList = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_chat_id", referencedColumnName = "chat_id")
@@ -86,27 +93,27 @@ public class UserQuery {
         this.userEntity = userEntity;
     }
 
-    public Set<String> getExperienceList() {
+    public Set<Experience> getExperienceList() {
         return experienceList;
     }
 
-    public void setExperienceList(Set<String> experienceList) {
+    public void setExperienceList(Set<Experience> experienceList) {
         this.experienceList = experienceList;
     }
 
-    public Set<String> getWorkFormatList() {
+    public Set<WorkFormat> getWorkFormatList() {
         return workFormatList;
     }
 
-    public void setWorkFormatList(Set<String> workFormatList) {
+    public void setWorkFormatList(Set<WorkFormat> workFormatList) {
         this.workFormatList = workFormatList;
     }
 
-    public Set<String> getEmploymentTypeList() {
+    public Set<EmploymentType> getEmploymentTypeList() {
         return employmentTypeList;
     }
 
-    public void setEmploymentTypeList(Set<String> employmentTypeList) {
+    public void setEmploymentTypeList(Set<EmploymentType> employmentTypeList) {
         this.employmentTypeList = employmentTypeList;
     }
 
@@ -130,27 +137,27 @@ public class UserQuery {
         return userEntity;
     }
 
-    public void addEmploymentType(String input) {
+    public void addEmploymentType(EmploymentType input) {
         employmentTypeList.add(input);
     }
 
-    public void removeEmploymentType(String input) {
+    public void removeEmploymentType(EmploymentType input) {
         employmentTypeList.remove(input);
     }
 
-    public void addWorkFormat(String input) {
+    public void addWorkFormat(WorkFormat input) {
         workFormatList.add(input);
     }
 
-    public void removeWorkFormat(String input) {
+    public void removeWorkFormat(WorkFormat input) {
         workFormatList.remove(input);
     }
 
-    public void addExperience(String input) {
+    public void addExperience(Experience input) {
         experienceList.add(input);
     }
 
-    public void removeExperience(String input) {
+    public void removeExperience(Experience input) {
         experienceList.remove(input);
     }
 
@@ -159,11 +166,26 @@ public class UserQuery {
         StringJoiner sj = new StringJoiner(",\n", "", ".");
 
         if (position != null)           sj.add("<i>Должность:</i> " + position);
-        if (experienceList != null && !experienceList.isEmpty())     sj.add("<i>опыт:</i> " + experienceList);
+        if (experienceList != null && !experienceList.isEmpty()) {
+            String expText = experienceList.stream()
+                            .map(Experience::getUiText)
+                            .collect(Collectors.joining(", "));
+            sj.add("<i>опыт:</i> " + expText);
+        }
         if (city != null)               sj.add("<i>город:</i> " + city);
-        if (workFormatList != null && !workFormatList.isEmpty())     sj.add("<i>формат работы:</i> " + workFormatList);
+        if (workFormatList != null && !workFormatList.isEmpty()) {
+            String workFormatText = workFormatList.stream()
+                            .map(WorkFormat::getUiText)
+                            .collect(Collectors.joining(", "));
+            sj.add("<i>формат работы:</i> " + workFormatText);
+        }
         if (salary != null)             sj.add("<i>желаемая зарплата:</i> " + salary);
-        if (employmentTypeList != null && !employmentTypeList.isEmpty()) sj.add("<i>тип занятости:</i> " + employmentTypeList);
+        if (employmentTypeList != null && !employmentTypeList.isEmpty()) {
+            String employmentTypeText = employmentTypeList.stream()
+                    .map(EmploymentType::getUiText)
+                    .collect(Collectors.joining(", "));
+            sj.add("<i>тип занятости:</i> " + employmentTypeText);
+        }
 
         return sj.toString();
     }

@@ -2,6 +2,7 @@ vacancies:
   platforms:
     hh:
       base-url: "https://rabota.by/search/vacancy"
+      api-url: ""
       query-param-names:
         position: "text"
         city: "area"
@@ -9,16 +10,16 @@ vacancies:
         employment-type: "employment"
         work-format: "work_format"
       experience-mapping:
-        "Без опыта": "noExperience"
-        "1-3 года": "between1And3"
-        "3-6 лет": "between3And6"
-        "Более 6 лет": "moreThan6"
+        NO_EXPERIENCE: "noExperience"
+        FROM_1_TO_3: "between1And3"
+        FROM_3_TO_6: "between3And6"
+        MORE_THAN_6: "moreThan6"
       employment-mapping:
-        "Полная занятость": "full"
-        "Частичная занятость": "part"
-        "Стажировка": "probation"
+        FULL: "full"
+        PART: "part"
+        PROBATION: "probation"
       work-format-mapping:
-        "На месте работодателя": "ON_SITE"
-        "Удалённо": "REMOTE"
-        "Гибрид": "HYBRID"
+        ON_SITE: "ON_SITE"
+        REMOTE: "REMOTE"
+        HYBRID: "HYBRID"
       additional-params: "search_field=name&search_field=company_name&search_field=description"

@@ -22,7 +22,7 @@ public class HhQueryBuilder implements QueryBuilder {
     private final Logger log = LoggerFactory.getLogger(HhQueryBuilder.class);
 
     public HhQueryBuilder(VacancyProperties properties) {
-        this.platformConfig = properties.platform().get("hh");
+        this.platformConfig = properties.platforms().get("hh");
     }
 
     @Override
@@ -63,16 +63,17 @@ public class HhQueryBuilder implements QueryBuilder {
 
     private String getCityCode(String city) {
         RestClient restClient = RestClient.builder()
-                .baseUrl(platformConfig.baseUrl())
+                .baseUrl(platformConfig.apiUrl())
                 .defaultHeader("User-Agent", "FindJobTelegramBot/1.0 (andreyzhevlakov23@gmail.com)")
                 .build();
 
         List<AreaDto> areaDtoList = restClient.get()
                 .uri("/areas")
                 .retrieve()
-                .body(new ParameterizedTypeReference<List<AreaDto>>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
 
-        if (areaDtoList.isEmpty()) {
+        if (areaDtoList == null || areaDtoList.isEmpty()) {
             throw new NullPointerException();
         }
 

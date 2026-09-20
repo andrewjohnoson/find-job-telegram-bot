@@ -8,7 +8,9 @@ spring:
 #    Optional: if exists, we use it, else app doesn't crash
 #    file:.env points that spring should search it into the root of project
 #    [.properties] makes spring process syntax like default .properties
-    import: "optional:file:.env[.properties]"
+    import:
+      - "optional:file:.env[.properties]"
+      - classpath:vacancies.yml
   jpa:
     hibernate:
       ddl-auto: update

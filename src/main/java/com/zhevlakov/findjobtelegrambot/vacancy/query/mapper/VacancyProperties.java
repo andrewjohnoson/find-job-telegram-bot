@@ -6,6 +6,6 @@ import java.util.Map;
 
 @ConfigurationProperties(prefix = "vacancies")
 public record VacancyProperties(
-        Map<String, PlatformConfig> platform
+        Map<String, PlatformConfig> platforms
 ) {
 }
