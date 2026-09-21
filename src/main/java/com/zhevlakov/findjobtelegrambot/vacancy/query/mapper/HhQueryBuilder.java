@@ -37,6 +37,8 @@ public class HhQueryBuilder implements QueryBuilder {
         applyParamMapping(uriBuilder, platformConfig.queryParamNames().get("work-format"),
                         platformConfig.workFormatMapping(), userQuery.getWorkFormatList());
 
+        uriBuilder.path(platformConfig.additionalParams());
+
         return uriBuilder
                 .encode()
                 .build()
@@ -48,6 +50,10 @@ public class HhQueryBuilder implements QueryBuilder {
             String paramName,
             String value
     ) {
+        if (value == null) {
+            log.warn("applyParamMapping: не удалось применить параметр={}, т.к. значения в запросе пользователя пусты.", paramName);
+            return;
+        }
         uriBuilder.queryParam(paramName, value);
     }
 
@@ -58,7 +64,7 @@ public class HhQueryBuilder implements QueryBuilder {
             Set<T> values
     ) {
         if (values == null) {
-            log.warn("applyParamMapping: не удалось применить параметр={}, т.к. значения в запросе пользователя пусты", paramName);
+            log.warn("applyParamMapping: не удалось применить параметр={}, т.к. значения в запросе пользователя пусты.", paramName);
             return;
         }
 
@@ -99,9 +105,7 @@ public class HhQueryBuilder implements QueryBuilder {
         return null;
     }
 
-    public void test() {
-        log.info(getCityCodeViaSuggest("Москва"));
-        log.info(getCityCodeViaSuggest("минск"));
-        log.info(getCityCodeViaSuggest("приволжский"));
+    public void test(UserQuery userQuery) {
+        log.info(buildQuery(userQuery).toString());
     }
 }

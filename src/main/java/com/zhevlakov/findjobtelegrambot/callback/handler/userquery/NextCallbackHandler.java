@@ -33,8 +33,9 @@ public class NextCallbackHandler implements CallbackHandler {
 
     @Override
     public List<BotResponse> handle(CallbackContent callbackContent) {
-        var chatId = callbackContent.chatId();
 
+        var chatId = callbackContent.chatId();
+/*
         log.info("{}", callbackContent.data());
         var code = callbackContent.code();
         var stateFromCode = FsmStates.valueOf(code);
@@ -43,7 +44,7 @@ public class NextCallbackHandler implements CallbackHandler {
             log.warn("Пользователь = {} попытался нажать кнопку для состояния = {}, находясь в ином состоянии", chatId, code);
             var errorResponse = BotResponse.error(chatId, "Кнопка не откликается.");
             return BotResponse.asList(errorResponse);
-        }
+        } */
 
         var user = userService.getUserById(chatId);
 

@@ -9,7 +9,7 @@ import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
 import com.zhevlakov.findjobtelegrambot.vacancy.query.converter.Experience;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -67,9 +67,18 @@ public class AskExperienceFsmStep implements FsmStep {
 
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
-        return Arrays.stream(Experience.values())
-                .map(exp -> KeyboardButtonContent.standardButton(exp.getUiText(), exp.name()))
-                .toList();
+        List<KeyboardButtonContent> buttons = new ArrayList<>();
+
+        for (Experience exp : Experience.values()) {
+            buttons.add(KeyboardButtonContent.standardButton(exp.getUiText(), exp.name()));
+        }
+
+        buttons.add(KeyboardButtonContent.standardButton(
+                QueryCode.NEXT.getButtonText(),
+                QueryCode.NEXT.getExpCode()
+        ));
+
+        return buttons;
     }
 
     @Override

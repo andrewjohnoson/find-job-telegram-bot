@@ -6,9 +6,11 @@ import com.zhevlakov.findjobtelegrambot.fsm.*;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
+import com.zhevlakov.findjobtelegrambot.vacancy.query.converter.EmploymentType;
 import com.zhevlakov.findjobtelegrambot.vacancy.query.converter.WorkFormat;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -66,9 +68,18 @@ public class AskWorkFormatFsmStep implements FsmStep {
 
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
-        return Arrays.stream(WorkFormat.values())
-                .map(workFmt -> KeyboardButtonContent.standardButton(workFmt.getUiText(), workFmt.name()))
-                .toList();
+        List<KeyboardButtonContent> buttons = new ArrayList<>();
+
+        for (WorkFormat workFmt : WorkFormat.values()) {
+            buttons.add(KeyboardButtonContent.standardButton(workFmt.getUiText(), workFmt.name()));
+        }
+
+        buttons.add(KeyboardButtonContent.standardButton(
+                QueryCode.NEXT.getButtonText(),
+                QueryCode.NEXT.getExpCode()
+        ));
+
+        return buttons;
     }
 
     @Override

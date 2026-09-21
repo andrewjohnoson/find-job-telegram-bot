@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
+import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
 import com.zhevlakov.findjobtelegrambot.vacancy.playwrightscrapper.HhPlaywrightScrapper;
 import com.zhevlakov.findjobtelegrambot.vacancy.provider.TestProvider;
 import com.zhevlakov.findjobtelegrambot.vacancy.query.mapper.HhQueryBuilder;
@@ -19,14 +20,17 @@ public class TestCommandHandler implements CommandHandler {
     private final HhQueryBuilder hhQueryBuilder;
     private final HhPlaywrightScrapper hhPlaywrightScrapper;
     private final Logger log = LoggerFactory.getLogger(TestCommandHandler.class);
+    private final UserQueryService userQueryService;
 
     public TestCommandHandler(TestProvider testProvider,
                               HhQueryBuilder hhQueryBuilder,
-                              HhPlaywrightScrapper hhPlaywrightScrapper
+                              HhPlaywrightScrapper hhPlaywrightScrapper,
+                              UserQueryService userQueryService
     ) {
         this.testProvider = testProvider;
         this.hhQueryBuilder = hhQueryBuilder;
         this.hhPlaywrightScrapper = hhPlaywrightScrapper;
+        this.userQueryService = userQueryService;
     }
 
     @Override
@@ -36,7 +40,8 @@ public class TestCommandHandler implements CommandHandler {
 
 //        log.info("Vacancies {}", hhPlaywrightScrapper.fetchVacancies());
 
-        hhQueryBuilder.test();
+        var userQuery = userQueryService.getByChatId(userId);
+        hhQueryBuilder.test(userQuery);
 
         return BotResponse.asList(BotResponse.post(userId, "Тест"));
     }

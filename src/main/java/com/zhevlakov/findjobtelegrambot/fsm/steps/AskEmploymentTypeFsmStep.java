@@ -7,8 +7,10 @@ import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
 import com.zhevlakov.findjobtelegrambot.vacancy.query.converter.EmploymentType;
+import com.zhevlakov.findjobtelegrambot.vacancy.query.converter.Experience;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -66,9 +68,18 @@ public class AskEmploymentTypeFsmStep implements FsmStep {
 
     @Override
     public List<KeyboardButtonContent> nextKeyboardButtons() {
-        return Arrays.stream(EmploymentType.values())
-                .map(empl -> KeyboardButtonContent.standardButton(empl.getUiText(), empl.name()))
-                .toList();
+        List<KeyboardButtonContent> buttons = new ArrayList<>();
+
+        for (EmploymentType empl : EmploymentType.values()) {
+            buttons.add(KeyboardButtonContent.standardButton(empl.getUiText(), empl.name()));
+        }
+
+        buttons.add(KeyboardButtonContent.standardButton(
+                QueryCode.NEXT.getButtonText(),
+                QueryCode.NEXT.getExpCode()
+        ));
+
+        return buttons;
     }
 
     @Override
