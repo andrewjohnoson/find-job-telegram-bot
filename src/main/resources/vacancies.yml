@@ -2,7 +2,7 @@ vacancies:
   platforms:
     hh:
       base-url: "https://rabota.by/search/vacancy"
-      api-url: ""
+      api-url: "https://api.hh.ru"
       query-param-names:
         position: "text"
         city: "area"

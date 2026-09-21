@@ -16,8 +16,9 @@ public class HhVacancyProvider {
                         .scheme("https")
                         .host("api.hh.ru")
                         .path("/vacancies")
+
                         .build())
-                .header("User-Agent", "TelegramBot/1.0 (andreyzhevlakov23@gmail.com)")
+                .header("User-Agent", "FindJobTelegramBot/1.0 (andreyzhevlakov23@gmail.com)")
                 .retrieve()
                 .body(String.class);
     }

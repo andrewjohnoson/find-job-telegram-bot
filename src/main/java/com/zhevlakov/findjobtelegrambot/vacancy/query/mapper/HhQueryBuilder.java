@@ -2,23 +2,20 @@ package com.zhevlakov.findjobtelegrambot.vacancy.query.mapper;
 
 import com.zhevlakov.findjobtelegrambot.user.query.UserQuery;
 import com.zhevlakov.findjobtelegrambot.vacancy.query.QueryBuilder;
-import com.zhevlakov.findjobtelegrambot.vacancy.query.mapper.hh.AreaDto;
+import com.zhevlakov.findjobtelegrambot.vacancy.query.mapper.hh.SuggestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
 @Component
 public class HhQueryBuilder implements QueryBuilder {
     private final PlatformConfig platformConfig;
-    private Map<String, String> citiesMap;
     private final Logger log = LoggerFactory.getLogger(HhQueryBuilder.class);
 
     public HhQueryBuilder(VacancyProperties properties) {
@@ -26,22 +23,24 @@ public class HhQueryBuilder implements QueryBuilder {
     }
 
     @Override
-    public String buildQuery(UserQuery userQuery) {
+    public URI buildQuery(UserQuery userQuery) {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(platformConfig.baseUrl());
 
-        applyParamMapping(
-                uriBuilder,
-                platformConfig.queryParamNames().get("position"),
-                userQuery.getPosition()
-        );
+        applyParamMapping(uriBuilder, platformConfig.queryParamNames().get("position"), userQuery.getPosition());
+        applyParamMapping(uriBuilder, platformConfig.queryParamNames().get("salary"), userQuery.getSalary());
+        applyParamMapping(uriBuilder, platformConfig.queryParamNames().get("experience"),
+                platformConfig.experienceMapping(), userQuery.getExperienceList());
+        applyParamMapping(uriBuilder, platformConfig.queryParamNames().get("employment"),
+                platformConfig.employmentMapping(), userQuery.getEmploymentTypeList());
+        applyParamMapping(uriBuilder, platformConfig.queryParamNames().get("city"),
+                getCityCodeViaSuggest(userQuery.getCity()));
+        applyParamMapping(uriBuilder, platformConfig.queryParamNames().get("work-format"),
+                        platformConfig.workFormatMapping(), userQuery.getWorkFormatList());
 
-        applyParamMapping(
-                uriBuilder,
-                platformConfig.queryParamNames().get("salary"),
-                userQuery.getSalary()
-        );
-
-        return null;
+        return uriBuilder
+                .encode()
+                .build()
+                .toUri();
     }
 
     private void applyParamMapping(
@@ -49,50 +48,60 @@ public class HhQueryBuilder implements QueryBuilder {
             String paramName,
             String value
     ) {
-
+        uriBuilder.queryParam(paramName, value);
     }
 
-    private void applyParamMapping(
+    private <T extends Enum<T>> void applyParamMapping(
             UriComponentsBuilder uriBuilder,
             String paramName,
-            Map<String, String> mapper,
-            Set<String> values
+            Map<T, String> mapper,
+            Set<T> values
     ) {
+        if (values == null) {
+            log.warn("applyParamMapping: не удалось применить параметр={}, т.к. значения в запросе пользователя пусты", paramName);
+            return;
+        }
 
+        for (T value : values) {
+            String platformValue = mapper.get(value);
+            if (platformValue != null) {
+                uriBuilder.queryParam(paramName, platformValue);
+            }
+        }
     }
 
-    private String getCityCode(String city) {
+    private String getCityCodeViaSuggest(String city) {
+        if (city == null || city.isBlank()) {
+            return null;
+        }
+
         RestClient restClient = RestClient.builder()
                 .baseUrl(platformConfig.apiUrl())
                 .defaultHeader("User-Agent", "FindJobTelegramBot/1.0 (andreyzhevlakov23@gmail.com)")
                 .build();
 
-        List<AreaDto> areaDtoList = restClient.get()
-                .uri("/areas")
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
+        try {
+            SuggestResponse response = restClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/suggests/areas")
+                            .queryParam("text", city)
+                            .build())
+                    .retrieve()
+                    .body(SuggestResponse.class);
 
-        if (areaDtoList == null || areaDtoList.isEmpty()) {
-            throw new NullPointerException();
+            if (response != null && response.items() != null && !response.items().isEmpty()) {
+                return response.items().getFirst().id();
+            }
+        } catch (Exception e) {
+            log.error("Ошибка при поиске города: {}", city, e);
         }
 
-        List<AreaDto> cities = new ArrayList<>();
-        collectCities(areaDtoList, cities);
-        return "";
+        return null;
     }
 
     public void test() {
-        log.info(getCityCode("h"));
-    }
-
-    private void collectCities(List<AreaDto> areaDtoList, List<AreaDto> result) {
-        for (AreaDto area : areaDtoList) {
-            if (area.areas().isEmpty()) {
-                result.add(area);
-                return;
-            }
-            collectCities(area.areas(), result);
-        }
+        log.info(getCityCodeViaSuggest("Москва"));
+        log.info(getCityCodeViaSuggest("минск"));
+        log.info(getCityCodeViaSuggest("приволжский"));
     }
 }
