@@ -8,7 +8,7 @@ import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancy;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancyService;
-import com.zhevlakov.findjobtelegrambot.vacancy.VacancyResponseFactory;
+import com.zhevlakov.findjobtelegrambot.vacancy.ui.VacancyResponseFactory;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancySearchFilter;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancyStatus;
 import org.springframework.stereotype.Component;

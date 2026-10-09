@@ -35,18 +35,17 @@ public class VacancyManager {
         vacancyDtoList.addAll(remotiveList);
 
         List<Vacancy> vacancies = vacancyDtoList.stream()
-                        .map(dto -> new Vacancy(
-                                null,
-                                dto.title(),
-                                dto.description(),
-                                dto.company(),
-                                null,
-                                null,
-                                null,
-                                dto.salary(),
-                                null,
-                                dto.url()
-                        )).toList();
+                        .map(dto -> {
+                            Vacancy vacancy = new Vacancy();
+                            vacancy.setTitle(dto.title());
+                            vacancy.setDescription(dto.description());
+                            vacancy.setCompany(dto.company());
+                            vacancy.setSalary(dto.salary());
+                            vacancy.setUrl(dto.url());
+                            vacancy.setPublicationDate(dto.publicationDate());
+
+                            return vacancy;
+                        }).toList();
 
         syncWithDatabase(userId, vacancies);
     }
@@ -54,5 +53,6 @@ public class VacancyManager {
     @Transactional
     protected void syncWithDatabase(Long userId, List<Vacancy> vacancyDtoList) {
         vacancyService.saveNewVacancies(userId, vacancyDtoList);
+        log.info("Вакансии синхронизованы.");
     }
 }

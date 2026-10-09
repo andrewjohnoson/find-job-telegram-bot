@@ -8,7 +8,7 @@ import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardGenerator;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancy;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancyService;
-import com.zhevlakov.findjobtelegrambot.vacancy.VacancyResponseFactory;
+import com.zhevlakov.findjobtelegrambot.vacancy.ui.VacancyResponseFactory;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancySearchFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

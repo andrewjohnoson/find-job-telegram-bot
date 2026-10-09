@@ -24,6 +24,9 @@ public class UserVacancy {
     @Enumerated(EnumType.STRING)
     private VacancyStatus status;
 
+    @Column(name = "is_viewed", nullable = false)
+    private Boolean isViewed = false;
+
     public UserVacancy() {
     }
 
@@ -31,12 +34,14 @@ public class UserVacancy {
             Long id,
             UserEntity user,
             Vacancy vacancy,
-            VacancyStatus status
+            VacancyStatus status,
+            Boolean isViewed
     ) {
         this.id = id;
         this.user = user;
         this.vacancy = vacancy;
         this.status = status;
+        this.isViewed = isViewed;
     }
 
     public Long getId() {
@@ -69,6 +74,14 @@ public class UserVacancy {
 
     public void setStatus(VacancyStatus status) {
         this.status = status;
+    }
+
+    public Boolean getViewed() {
+        return isViewed;
+    }
+
+    public void setViewed(Boolean viewed) {
+        isViewed = viewed;
     }
 
     @Override

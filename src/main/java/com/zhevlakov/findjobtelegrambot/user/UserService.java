@@ -33,7 +33,7 @@ public class UserService {
     }
 
     public boolean isUserFree(Long chatId) {
-        return userRepository.existsByChatIdAndState(chatId, FsmStates.FREE);
+        return userRepository.existsByUserIdAndState(chatId, FsmStates.FREE);
     }
 
     public UserEntity updateUser(UserEntity user) {

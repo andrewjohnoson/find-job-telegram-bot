@@ -1,7 +1,6 @@
 package com.zhevlakov.findjobtelegrambot.user.vacancy;
 
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancyStatus;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +12,7 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
     @Query("""
         select uv from UserVacancy uv
         left join fetch uv.vacancy
-        where uv.user.chatId = :user_id
+        where uv.user.userId = :user_id
                 and uv.status <> :status
         """)
     List<UserVacancy> findAllVisibleByUser(
@@ -26,7 +25,7 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
             """
         select uv from UserVacancy uv
         left join fetch uv.vacancy
-        where uv.user.chatId = :user_id
+        where uv.user.userId = :user_id
                 and uv.status = :status
         """
     )
@@ -36,8 +35,22 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
             Pageable pager
     );
 
+    // получить первые 5 вакансий, самые новые, где is_viewed = false
+    @Query(
+            """
+            select uv from UserVacancy uv
+            left join fetch uv.vacancy
+            where uv.isViewed = false and uv.user.userId = :user_id
+            order by uv.vacancy.publicationDate desc
+            limit 5
+            """
+    )
+    List<UserVacancy> getNewUserVacancies(
+            @Param("user_id") Long userId
+    );
+
     UserVacancy getUserVacancyByVacancy_Id(Long vacancyId);
 
     boolean existsByIdAndStatus(Long vacancyId, VacancyStatus status);
-    List<UserVacancy> findByUserAndVacancy_IdIn(Long userId, List<Long> vacancyIds);
+    List<UserVacancy> findByUser_UserIdAndVacancy_IdIn(Long userId, List<Long> vacancyIds);
 }

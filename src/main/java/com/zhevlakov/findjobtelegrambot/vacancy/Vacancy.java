@@ -2,7 +2,9 @@ package com.zhevlakov.findjobtelegrambot.vacancy;
 
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancy;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -33,14 +35,21 @@ public class Vacancy {
     @Column(name = "experience")
     private String experience;
 
-    @Column(name = "salary_from")
-    private String salaryFrom;
+    @Column(name = "salary")
+    private String salary;
 
     @Column(name = "work_format")
     private String workFormat;
 
     @Column(name = "url")
     private String url;
+
+    @Column(name = "publication_date")
+    private LocalDateTime publicationDate;
+
+    @CreationTimestamp
+    @Column(name = "creation_date", updatable = false)
+    private LocalDateTime creationDate;
 
     @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL)
     private List<UserVacancy> userVacancyList = new ArrayList<>();
@@ -56,9 +65,11 @@ public class Vacancy {
             String city,
             String employmentType,
             String experience,
-            String salaryFrom,
+            String salary,
             String workFormat,
-            String url
+            String url,
+            LocalDateTime publicationDate,
+            LocalDateTime creationDate
     ) {
         this.id = id;
         this.title = title;
@@ -67,9 +78,11 @@ public class Vacancy {
         this.city = city;
         this.employmentType = employmentType;
         this.experience = experience;
-        this.salaryFrom = salaryFrom;
+        this.salary = salary;
         this.workFormat = workFormat;
         this.url = url;
+        this.publicationDate = publicationDate;
+        this.creationDate = creationDate;
     }
 
     public Long getId() {
@@ -128,12 +141,12 @@ public class Vacancy {
         this.experience = experience;
     }
 
-    public String getSalaryFrom() {
-        return salaryFrom;
+    public String getSalary() {
+        return salary;
     }
 
-    public void setSalaryFrom(String salaryFrom) {
-        this.salaryFrom = salaryFrom;
+    public void setSalary(String salaryFrom) {
+        this.salary = salaryFrom;
     }
 
     public String getWorkFormat() {
@@ -152,6 +165,30 @@ public class Vacancy {
         this.url = url;
     }
 
+    public LocalDateTime getPublicationDate() {
+        return publicationDate;
+    }
+
+    public void setPublicationDate(LocalDateTime publicationDate) {
+        this.publicationDate = publicationDate;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public List<UserVacancy> getUserVacancyList() {
+        return userVacancyList;
+    }
+
+    public void setUserVacancyList(List<UserVacancy> userVacancyList) {
+        this.userVacancyList = userVacancyList;
+    }
+
     public void addUserVacancy(UserVacancy userVacancy) {
         userVacancyList.add(userVacancy);
         userVacancy.setVacancy(this);
@@ -163,12 +200,12 @@ public class Vacancy {
 
         if (title != null) sj.add("<b>" + title + "</b>");
         if (company != null) sj.add("<i>" + company + "</i>");
-        if (description != null) sj.add(description);
+//        if (description != null) sj.add(description);
         if (city != null) sj.add("<i>Город:</i> " + city);
         if (experience != null) sj.add("<i>Опыт работы:</i> " + experience);
         if (workFormat != null) sj.add("<i>Формат работы:</i> " + workFormat);
         if (employmentType != null) sj.add("<i>Тип занятости:</i> " + employmentType);
-        if (salaryFrom != null) sj.add("<i>Зарплата от:</i> " + salaryFrom);
+        if (salary != null) sj.add("<i>Зарплата от:</i> " + salary);
 
         return sj.toString();
     }

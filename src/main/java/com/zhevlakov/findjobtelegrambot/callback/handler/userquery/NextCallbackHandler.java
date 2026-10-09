@@ -4,7 +4,6 @@ import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackContent;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackHandler;
 import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
-import com.zhevlakov.findjobtelegrambot.fsm.FsmStates;
 import com.zhevlakov.findjobtelegrambot.fsm.QueryFsmWizardService;
 import com.zhevlakov.findjobtelegrambot.user.UserService;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQueryValidator;
@@ -50,8 +49,8 @@ public class NextCallbackHandler implements CallbackHandler {
 
         if (!userQueryValidator.canKeepPrevPosition(user)) {
             log.error("processChoice: В данный момент должность пользователя = {} не задана, поэтому не можем продолжить. chatId={}",
-                    user.getUserTag(), user.getChatId());
-            var errorResponse = BotResponse.error(user.getChatId(), "В данный момент должность не задана, поэтому нельзя продолжить.");
+                    user.getUserTag(), user.getUserId());
+            var errorResponse = BotResponse.error(user.getUserId(), "В данный момент должность не задана, поэтому нельзя продолжить.");
             return BotResponse.asList(errorResponse);
         }
 

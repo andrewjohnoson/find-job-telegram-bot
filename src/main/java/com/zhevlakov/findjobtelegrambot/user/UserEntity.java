@@ -12,8 +12,8 @@ import java.util.List;
 @Table(name = "users")
 public class UserEntity {
     @Id
-    @Column(name = "chat_id")
-    private Long chatId;
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "user_tag", nullable = false)
     private String userTag;
@@ -32,12 +32,12 @@ public class UserEntity {
     }
 
     public UserEntity(
-            Long chatId,
+            Long userId,
             String userTag,
             FsmStates state,
             UserQuery userQuery
     ) {
-        this.chatId = chatId;
+        this.userId = userId;
         this.userTag = userTag;
         this.state = state;
         this.userQuery = userQuery;
@@ -53,8 +53,8 @@ public class UserEntity {
         userVacancy.setUser(this);
     }
 
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
+    public void setUserId(Long chatId) {
+        this.userId = chatId;
     }
 
     public void setUserTag(String userTag) {
@@ -65,8 +65,8 @@ public class UserEntity {
         this.state = state;
     }
 
-    public Long getChatId() {
-        return chatId;
+    public Long getUserId() {
+        return userId;
     }
 
     public String getUserTag() {

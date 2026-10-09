@@ -17,7 +17,7 @@ public class UserQuery {
     private Long id;
 
     @Column(name = "position", nullable = false)
-    private String position;
+    private String position = "";
 
     @ElementCollection
     @CollectionTable(
@@ -53,7 +53,7 @@ public class UserQuery {
     private Set<EmploymentType> employmentTypeList = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_chat_id", referencedColumnName = "chat_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserEntity userEntity;
 
     public UserQuery() {

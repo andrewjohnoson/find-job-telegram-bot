@@ -26,7 +26,7 @@ public class UserQueryValidator {
     }
 
     public boolean canKeepPrevPosition(UserEntity user) {
-        var query = userQueryService.getByChatId(user.getChatId());
+        var query = userQueryService.getByChatId(user.getUserId());
         return !user.getState().equals(FsmStates.ASK_POSITION) ||
                 query.getPosition() != null;
     }

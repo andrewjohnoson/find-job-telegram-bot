@@ -16,8 +16,8 @@ public class UserQueryService {
                 .orElseThrow(() -> new EntityNotFoundException("Нет элемента с chatId=" + chatId));
     }
 
-    public boolean hasQuery(Long chatId) {
-        return userQueryRepository.existsByUserEntity_ChatId(chatId);
+    public boolean hasQuery(Long userId) {
+        return userQueryRepository.existsByUserEntity_UserId(userId);
     }
 
     public UserQuery updateQuery(UserQuery query) {

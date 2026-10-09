@@ -74,6 +74,7 @@ public class VacancyService {
         if (!vacanciesToSave.isEmpty()) {
             vacancyRepository.saveAll(vacanciesToSave);
             userVacancyService.linkVacancies(userId, vacanciesToSave);
+            log.info("Вакансии сохранены в БД.");
         }
     }
 }

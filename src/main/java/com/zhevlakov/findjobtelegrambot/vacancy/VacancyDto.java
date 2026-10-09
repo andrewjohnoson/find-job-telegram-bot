@@ -1,5 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.vacancy;
 
+import java.time.LocalDateTime;
+
 public record VacancyDto(
         String title,
         String url,
@@ -7,6 +9,6 @@ public record VacancyDto(
         String description,
         String salary,
         String jobHuntingWebsite,
-        String publicationDate
+        LocalDateTime publicationDate
 ) {
 }

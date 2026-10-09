@@ -107,7 +107,7 @@ public class QueryFsmWizardService {
     }
 
     private BotResponse applyInput(UserEntity user, FsmStep step, String input) {
-        var chatId = user.getChatId();
+        var chatId = user.getUserId();
 
         if (input == null) {
             userService.changeUserState(user, step.nextState());
@@ -130,7 +130,7 @@ public class QueryFsmWizardService {
     }
 
     private BotResponse applyChoiceInput(UserEntity user, FsmStep step, String input) {
-        var chatId = user.getChatId();
+        var chatId = user.getUserId();
 
         if (input == null) {
             userService.changeUserState(user, step.nextState());
@@ -147,7 +147,7 @@ public class QueryFsmWizardService {
 
     private BotResponse buildPost(UserEntity user, FsmStep prevStep) {
         if (user.getState().equals(FsmStates.FREE)) {
-            return confirm(user.getChatId());
+            return confirm(user.getUserId());
         }
 
         var step = getCurrentStep(user);
@@ -155,13 +155,13 @@ public class QueryFsmWizardService {
         var keyboard = switch (step.inputType()) {
             case USUAL_TEXT -> keyboardGenerator.getKeepPrevStateKeyboard(user.getState().name());
             case REPLY_CHOICE -> null;
-            case INLINE_CHOICE, INLINE_BUTTON -> keyboardGenerator.buildInlineKeyboard(step, user.getChatId());
+            case INLINE_CHOICE, INLINE_BUTTON -> keyboardGenerator.buildInlineKeyboard(step, user.getUserId());
         };
 
         Boolean updateKeyboard = prevStep != null
                 && step.inputType().equals(prevStep.inputType())
                 && step.currentState().equals(prevStep.currentState());
 
-        return BotResponse.post(user.getChatId(), step.responseMessage(), keyboard, true, updateKeyboard);
+        return BotResponse.post(user.getUserId(), step.responseMessage(), keyboard, true, updateKeyboard);
     }
 }

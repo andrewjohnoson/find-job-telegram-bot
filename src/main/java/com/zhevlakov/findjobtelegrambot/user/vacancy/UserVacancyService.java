@@ -77,7 +77,7 @@ public class UserVacancyService {
         List<Long> vacancyIds = vacancies.stream().map(Vacancy::getId).toList();
 
         List<UserVacancy> existingUserVacancyList = userVacancyRepository.
-                findByUserAndVacancy_IdIn(userId, vacancyIds);
+                findByUser_UserIdAndVacancy_IdIn(userId, vacancyIds);
 
         Set<Long> existingVacancyIds = existingUserVacancyList.stream()
                 .map(vacancy -> vacancy.getVacancy().getId())
@@ -93,7 +93,8 @@ public class UserVacancyService {
                         null,
                         user,
                         vacancy,
-                        VacancyStatus.FREE
+                        VacancyStatus.FREE,
+                        false
                 );
                 newVacancies.add(userVacancy);
             }
@@ -103,6 +104,11 @@ public class UserVacancyService {
 
         if (!newVacancies.isEmpty()) {
             userVacancyRepository.saveAll(newVacancies);
+            log.info("Вакансии сохранены для пользователя = {}", userId);
         }
+    }
+
+    public List<UserVacancy> getNewUserVacancies(Long userId) {
+        return userVacancyRepository.getNewUserVacancies(userId);
     }
 }

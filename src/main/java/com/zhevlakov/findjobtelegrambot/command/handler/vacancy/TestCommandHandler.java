@@ -5,11 +5,13 @@ import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
+import com.zhevlakov.findjobtelegrambot.vacancy.VacancyManager;
 import com.zhevlakov.findjobtelegrambot.vacancy.playwrightscrapper.HhPlaywrightScrapper;
 import com.zhevlakov.findjobtelegrambot.vacancy.provider.HhVacancyProvider;
 import com.zhevlakov.findjobtelegrambot.vacancy.provider.TestProvider;
 import com.zhevlakov.findjobtelegrambot.vacancy.provider.remotive.RemotiveVacancyProvider;
 import com.zhevlakov.findjobtelegrambot.vacancy.query.mapper.HhQueryBuilder;
+import com.zhevlakov.findjobtelegrambot.vacancy.ui.VacancyUiManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,8 @@ public class TestCommandHandler implements CommandHandler {
     private final UserQueryService userQueryService;
     private final HhVacancyProvider hhVacancyProvider;
     private final RemotiveVacancyProvider remotiveVacancyProvider;
+    private final VacancyUiManager uiManager;
+    private final VacancyManager vacancyManager;
 
     public TestCommandHandler(
             TestProvider testProvider,
@@ -32,7 +36,9 @@ public class TestCommandHandler implements CommandHandler {
             HhPlaywrightScrapper hhPlaywrightScrapper,
             UserQueryService userQueryService,
             HhVacancyProvider hhVacancyProvider,
-            RemotiveVacancyProvider remotiveVacancyProvider
+            RemotiveVacancyProvider remotiveVacancyProvider,
+            VacancyUiManager uiManager,
+            VacancyManager vacancyManager
     ) {
         this.testProvider = testProvider;
         this.hhQueryBuilder = hhQueryBuilder;
@@ -40,19 +46,15 @@ public class TestCommandHandler implements CommandHandler {
         this.userQueryService = userQueryService;
         this.hhVacancyProvider = hhVacancyProvider;
         this.remotiveVacancyProvider = remotiveVacancyProvider;
+        this.uiManager = uiManager;
+        this.vacancyManager = vacancyManager;
     }
 
     @Override
     public List<BotResponse> handle(Message message) {
         var userId = message.chat().id();
-
-
-        return BotResponse.asList(BotResponse.post(userId, "Тест"));
-//        return testProvider.fetchVacancies(userId);
-
-//        log.info("Vacancies {}", hhPlaywrightScrapper.fetchVacancies());
-
-
+//        vacancyManager.fetch(userId);
+        return uiManager.outputVacancies(userId);
     }
 
     @Override

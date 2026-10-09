@@ -1,4 +1,4 @@
-package com.zhevlakov.findjobtelegrambot.vacancy;
+package com.zhevlakov.findjobtelegrambot.vacancy.ui;
 
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
