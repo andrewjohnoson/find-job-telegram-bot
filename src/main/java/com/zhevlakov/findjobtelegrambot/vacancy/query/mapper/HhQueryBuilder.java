@@ -37,7 +37,9 @@ public class HhQueryBuilder implements QueryBuilder {
         applyParamMapping(uriBuilder, platformConfig.queryParamNames().get("work-format"),
                         platformConfig.workFormatMapping(), userQuery.getWorkFormatList());
 
-        uriBuilder.path(platformConfig.additionalParams());
+        if (platformConfig.additionalParams() != null && !platformConfig.additionalParams().isBlank()) {
+            uriBuilder.query(platformConfig.additionalParams());
+        }
 
         return uriBuilder
                 .encode()
@@ -50,8 +52,14 @@ public class HhQueryBuilder implements QueryBuilder {
             String paramName,
             String value
     ) {
-        if (value == null) {
-            log.warn("applyParamMapping: не удалось применить параметр={}, т.к. значения в запросе пользователя пусты.", paramName);
+        log.info("paramName={}, value={}", paramName, value);
+        if (paramName == null || paramName.isBlank()) {
+            log.warn("applyParamMapping(3 args): не удалось применить параметр, т.к. он null");
+            return;
+        }
+
+        if (value == null || value.isBlank()) {
+            log.warn("applyParamMapping(3 args): не удалось применить параметр={}, т.к. значения в запросе пользователя пусты.", paramName);
             return;
         }
         uriBuilder.queryParam(paramName, value);
@@ -63,8 +71,13 @@ public class HhQueryBuilder implements QueryBuilder {
             Map<T, String> mapper,
             Set<T> values
     ) {
+        if (paramName == null || paramName.isBlank()) {
+            log.warn("applyParamMapping(4 args): не удалось применить параметр, т.к. он null");
+            return;
+        }
+
         if (values == null) {
-            log.warn("applyParamMapping: не удалось применить параметр={}, т.к. значения в запросе пользователя пусты.", paramName);
+            log.warn("applyParamMapping(4 args): не удалось применить параметр={}, т.к. значения в запросе пользователя пусты.", paramName);
             return;
         }
 
@@ -103,9 +116,5 @@ public class HhQueryBuilder implements QueryBuilder {
         }
 
         return null;
-    }
-
-    public void test(UserQuery userQuery) {
-        log.info(buildQuery(userQuery).toString());
     }
 }

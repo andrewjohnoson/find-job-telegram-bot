@@ -50,7 +50,7 @@ public abstract class AbstractPlaywrightScrapper {
                     page.waitForSelector(vacancySelector,
                             new Page.WaitForSelectorOptions().setTimeout(10000));
                 } catch (Exception e) {
-                    log.error("Произошла ошибка. Возможно, сработала капча {}", e.toString());
+                    log.error("Произошла ошибка. Возможно, сработала капча. {}", e.getStackTrace());
                     return null;
                 }
 
@@ -62,5 +62,6 @@ public abstract class AbstractPlaywrightScrapper {
         }
     }
 
+    protected abstract String getJobHuntingWebsite();
     protected abstract List<VacancyDto> parseHtml(Elements vacancies);
 }

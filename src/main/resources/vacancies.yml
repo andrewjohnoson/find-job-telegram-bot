@@ -6,6 +6,7 @@ vacancies:
       query-param-names:
         position: "text"
         city: "area"
+        salary: "salary"
         experience: "experience"
         employment-type: "employment"
         work-format: "work_format"
@@ -22,4 +23,4 @@ vacancies:
         ON_SITE: "ON_SITE"
         REMOTE: "REMOTE"
         HYBRID: "HYBRID"
-      additional-params: "search_field=name&search_field=company_name&search_field=description"
+      additional-params: "search_field=name&search_field=company_name&search_field=description&order_by=publication_time"

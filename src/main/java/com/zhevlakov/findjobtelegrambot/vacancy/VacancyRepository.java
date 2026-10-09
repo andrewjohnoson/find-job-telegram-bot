@@ -13,4 +13,6 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
 //    List<Vacancy> searchAllByFilter(
 //            @Param("keys") List<Pair<String, String>> keys,
 //            Pageable pager);
+
+    List<Vacancy> findByUrlIn(List<String> urls);
 }

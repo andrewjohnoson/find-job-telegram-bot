@@ -39,4 +39,5 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
     UserVacancy getUserVacancyByVacancy_Id(Long vacancyId);
 
     boolean existsByIdAndStatus(Long vacancyId, VacancyStatus status);
+    List<UserVacancy> findByUserAndVacancy_IdIn(Long userId, List<Long> vacancyIds);
 }

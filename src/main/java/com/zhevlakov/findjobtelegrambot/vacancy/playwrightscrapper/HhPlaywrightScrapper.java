@@ -17,15 +17,24 @@ public class HhPlaywrightScrapper extends AbstractPlaywrightScrapper {
 
         for (Element vacancy : vacancies) {
             Element titleElement = vacancy.selectFirst("[data-qa=\"serp-item__title\"]");
-            if (titleElement != null) {
+            Element companyElement = vacancy.selectFirst("[data-qa=\"vacancy-serp__vacancy-employer-text\"]");
+
+            if (titleElement != null && companyElement != null) {
                 String title = titleElement.text();
                 String url = titleElement.attr("href");
                 String link = url.startsWith("http") ? url : "https://hh.ru" + url;
 
-                parsedVacancies.add(new VacancyDto(title, link));
+                String company = companyElement.text();
+
+                parsedVacancies.add(new VacancyDto(title, link, company, getJobHuntingWebsite(), null, null, null));
             }
         }
 
         return parsedVacancies;
+    }
+
+    @Override
+    protected String getJobHuntingWebsite() {
+        return "HeadHunter";
     }
 }
