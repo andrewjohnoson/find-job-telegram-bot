@@ -3,6 +3,7 @@ package com.zhevlakov.findjobtelegrambot.user.vacancy;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancyStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -35,7 +36,6 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
             Pageable pager
     );
 
-    // получить первые 5 вакансий, самые новые, где is_viewed = false
     @Query(
             """
             select uv from UserVacancy uv
@@ -48,6 +48,16 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
     List<UserVacancy> getNewUserVacancies(
             @Param("user_id") Long userId
     );
+
+    @Modifying(clearAutomatically = true)
+    @Query(
+        """
+        update UserVacancy uv
+        set uv.isViewed = true
+        where uv.id in :ids
+        """
+    )
+    void markAsViewed(@Param("ids") List<Long> userVacancyIds);
 
     UserVacancy getUserVacancyByVacancy_Id(Long vacancyId);
 

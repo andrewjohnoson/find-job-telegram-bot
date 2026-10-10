@@ -17,16 +17,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserVacancyService {
-    private static int PAGE_SIZE = 10;
-    private static int PAGE_NUM = 0;
+    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_NUM = 0;
 
     private final UserVacancyRepository userVacancyRepository;
     private final UserService userService;
 
     private final Logger log = LoggerFactory.getLogger(UserVacancyService.class);
 
-    public UserVacancyService(UserVacancyRepository userVacancyRepository,
-                              UserService userService
+    public UserVacancyService(
+            UserVacancyRepository userVacancyRepository,
+            UserService userService
     ) {
         this.userVacancyRepository = userVacancyRepository;
         this.userService = userService;
@@ -109,6 +110,18 @@ public class UserVacancyService {
     }
 
     public List<UserVacancy> getNewUserVacancies(Long userId) {
-        return userVacancyRepository.getNewUserVacancies(userId);
+        List<UserVacancy> newUserVacancies = userVacancyRepository.getNewUserVacancies(userId);
+        makeVacanciesViewed(newUserVacancies);
+        return newUserVacancies;
+    }
+
+    private void makeVacanciesViewed(List<UserVacancy> userVacancyList) {
+        List<Long> userVacancyIds = userVacancyList.stream()
+                .map(UserVacancy::getId)
+                .toList();
+
+        userVacancyRepository.markAsViewed(userVacancyIds);
+
+        log.info("Вакансии, которые были помечены прочитанными: {}", userVacancyList);
     }
 }

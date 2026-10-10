@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class VacancyResponseFactory {
@@ -27,7 +28,7 @@ public class VacancyResponseFactory {
             List<UserVacancy> vacancies,
             Function<UserVacancy, List<KeyboardButtonContent>> actionButtonsProvider
     ) {
-        return vacancies.stream()
+        List<BotResponse> responses = vacancies.stream()
                 .map(vacancy -> {
                     var vacancyId = vacancy.getVacancy().getId();
                     var url = vacancy.getVacancy().getUrl();
@@ -45,6 +46,19 @@ public class VacancyResponseFactory {
 
                     return BotResponse.post(userId, vacancy.toString(), keyboard);
                 })
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        Keyboard showMoreKeyboard = generateShowMoreKeyboard();
+
+        responses.add(BotResponse.post(userId, "Нажмите, чтобы показать дальше.", showMoreKeyboard));
+        return responses;
+    }
+
+    private Keyboard generateShowMoreKeyboard() {
+        KeyboardButtonContent showMoreButton =  KeyboardButtonContent.standardButton(
+                InlineDataCode.VACANCY_LOAD_MORE.buttonText(),
+                InlineDataCode.VACANCY_LOAD_MORE.inlineButtonCode());
+
+        return keyboardGenerator.buildInlineKeyboard(List.of(showMoreButton));
     }
 }

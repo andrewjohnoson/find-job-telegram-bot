@@ -198,14 +198,14 @@ public class Vacancy {
     public String toString() {
         StringJoiner sj = new StringJoiner("\n", "", ".");
 
-        if (title != null) sj.add("<b>" + title + "</b>");
-        if (company != null) sj.add("<i>" + company + "</i>");
-//        if (description != null) sj.add(description);
-        if (city != null) sj.add("<i>Город:</i> " + city);
-        if (experience != null) sj.add("<i>Опыт работы:</i> " + experience);
-        if (workFormat != null) sj.add("<i>Формат работы:</i> " + workFormat);
-        if (employmentType != null) sj.add("<i>Тип занятости:</i> " + employmentType);
-        if (salary != null) sj.add("<i>Зарплата от:</i> " + salary);
+        if (title != null && !title.isBlank()) sj.add("<b>" + title + "</b>");
+        if (company != null && !company.isBlank()) sj.add("<i>" + company + "</i>");
+        if (description != null && !description.isBlank()) sj.add(description);
+        if (city != null && !city.isBlank()) sj.add("<i>Город:</i> " + city);
+        if (experience != null && !experience.isBlank()) sj.add("<i>Опыт работы:</i> " + experience);
+        if (workFormat != null && !workFormat.isBlank()) sj.add("<i>Формат работы:</i> " + workFormat);
+        if (employmentType != null && !employmentType.isBlank()) sj.add("<i>Тип занятости:</i> " + employmentType);
+        if (salary != null && !salary.isBlank()) sj.add("<i>Зарплата от:</i> " + salary);
 
         return sj.toString();
     }

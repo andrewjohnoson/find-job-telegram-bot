@@ -2,6 +2,7 @@ package com.zhevlakov.findjobtelegrambot.vacancy;
 
 import com.zhevlakov.findjobtelegrambot.vacancy.provider.remotive.RemotiveVacancyProvider;
 import jakarta.transaction.Transactional;
+import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -19,12 +20,16 @@ public class VacancyManager {
     // Сервисы
     private final VacancyService vacancyService;
 
+    private final VacancyFormatter vacancyFormatter;
+
     public VacancyManager(
             RemotiveVacancyProvider remotiveVacancyProvider,
-            VacancyService vacancyService
+            VacancyService vacancyService,
+            VacancyFormatter vacancyFormatter
     ) {
         this.remotiveVacancyProvider = remotiveVacancyProvider;
         this.vacancyService = vacancyService;
+        this.vacancyFormatter = vacancyFormatter;
     }
 
     @Transactional
@@ -36,9 +41,11 @@ public class VacancyManager {
 
         List<Vacancy> vacancies = vacancyDtoList.stream()
                         .map(dto -> {
+                            String fixedDescription = vacancyFormatter.parseHtml(dto.description());
+
                             Vacancy vacancy = new Vacancy();
                             vacancy.setTitle(dto.title());
-                            vacancy.setDescription(dto.description());
+                            vacancy.setDescription(fixedDescription);
                             vacancy.setCompany(dto.company());
                             vacancy.setSalary(dto.salary());
                             vacancy.setUrl(dto.url());
