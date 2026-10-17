@@ -24,7 +24,7 @@ public class RemotiveVacancyProvider implements VacancyProvider {
         this.userQueryService = userQueryService;
         this.restClient = RestClient.builder()
                 .baseUrl("https://remotive.com/api")
-                .defaultHeader("UserAgent", "FindJobTelegramBot/1.0")
+                .defaultHeader("User-Agent", "FindJobTelegramBot/1.0")
                 .build();
     }
 
