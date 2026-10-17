@@ -78,7 +78,7 @@ public class UserVacancyService {
         List<Long> vacancyIds = vacancies.stream().map(Vacancy::getId).toList();
 
         List<UserVacancy> existingUserVacancyList = userVacancyRepository.
-                findByUser_UserIdAndVacancy_IdIn(userId, vacancyIds);
+                findUnviewedVacancies(userId, vacancyIds);
 
         Set<Long> existingVacancyIds = existingUserVacancyList.stream()
                 .map(vacancy -> vacancy.getVacancy().getId())

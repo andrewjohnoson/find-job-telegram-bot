@@ -48,14 +48,14 @@ public class VacancyResponseFactory {
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        Keyboard showMoreKeyboard = generateShowMoreKeyboard();
+        Keyboard showMoreKeyboard = generateLoadMoreKeyboard();
 
         responses.add(BotResponse.post(userId, "Нажмите, чтобы показать дальше.", showMoreKeyboard));
         return responses;
     }
 
-    private Keyboard generateShowMoreKeyboard() {
-        KeyboardButtonContent showMoreButton =  KeyboardButtonContent.standardButton(
+    private Keyboard generateLoadMoreKeyboard() {
+        KeyboardButtonContent showMoreButton = KeyboardButtonContent.standardButton(
                 InlineDataCode.VACANCY_LOAD_MORE.buttonText(),
                 InlineDataCode.VACANCY_LOAD_MORE.inlineButtonCode());
 

@@ -35,7 +35,7 @@ public class HhQueryBuilder implements QueryBuilder {
         applyParamMapping(uriBuilder, platformConfig.queryParamNames().get("city"),
                 getCityCodeViaSuggest(userQuery.getCity()));
         applyParamMapping(uriBuilder, platformConfig.queryParamNames().get("work-format"),
-                        platformConfig.workFormatMapping(), userQuery.getWorkFormatList());
+                platformConfig.workFormatMapping(), userQuery.getWorkFormatList());
 
         if (platformConfig.additionalParams() != null && !platformConfig.additionalParams().isBlank()) {
             uriBuilder.query(platformConfig.additionalParams());

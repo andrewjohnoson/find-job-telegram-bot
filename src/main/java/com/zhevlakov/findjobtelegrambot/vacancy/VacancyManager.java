@@ -21,15 +21,18 @@ public class VacancyManager {
     private final VacancyService vacancyService;
 
     private final VacancyFormatter vacancyFormatter;
+    private final VacancyMapper vacancyMapper;
 
     public VacancyManager(
             RemotiveVacancyProvider remotiveVacancyProvider,
             VacancyService vacancyService,
-            VacancyFormatter vacancyFormatter
+            VacancyFormatter vacancyFormatter,
+            VacancyMapper vacancyMapper
     ) {
         this.remotiveVacancyProvider = remotiveVacancyProvider;
         this.vacancyService = vacancyService;
         this.vacancyFormatter = vacancyFormatter;
+        this.vacancyMapper = vacancyMapper;
     }
 
     @Transactional
@@ -39,20 +42,7 @@ public class VacancyManager {
         List<VacancyDto> remotiveList = remotiveVacancyProvider.fetch(userId);
         vacancyDtoList.addAll(remotiveList);
 
-        List<Vacancy> vacancies = vacancyDtoList.stream()
-                        .map(dto -> {
-                            String fixedDescription = vacancyFormatter.parseHtml(dto.description());
-
-                            Vacancy vacancy = new Vacancy();
-                            vacancy.setTitle(dto.title());
-                            vacancy.setDescription(fixedDescription);
-                            vacancy.setCompany(dto.company());
-                            vacancy.setSalary(dto.salary());
-                            vacancy.setUrl(dto.url());
-                            vacancy.setPublicationDate(dto.publicationDate());
-
-                            return vacancy;
-                        }).toList();
+        List<Vacancy> vacancies = vacancyMapper.toDomain(vacancyDtoList);
 
         syncWithDatabase(userId, vacancies);
     }

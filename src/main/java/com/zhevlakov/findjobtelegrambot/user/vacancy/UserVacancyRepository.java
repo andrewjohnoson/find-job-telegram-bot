@@ -40,7 +40,9 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
             """
             select uv from UserVacancy uv
             left join fetch uv.vacancy
-            where uv.isViewed = false and uv.user.userId = :user_id
+            where uv.isViewed = false
+                    and uv.user.userId = :user_id
+                    and uv.status = FREE
             order by uv.vacancy.publicationDate desc
             limit 5
             """
@@ -59,8 +61,19 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
     )
     void markAsViewed(@Param("ids") List<Long> userVacancyIds);
 
-    UserVacancy getUserVacancyByVacancy_Id(Long vacancyId);
+    @Query(
+            """
+            select uv from UserVacancy uv
+            where uv.user.userId = :userId
+                    and uv.vacancy.id in :vacancyIds
+                    and uv.isViewed = false
+            """
+    )
+    List<UserVacancy> findUnviewedVacancies(
+            @Param("userId") Long userId,
+            @Param("vacancyIds") List<Long> vacancyIds
+    );
 
+    UserVacancy getUserVacancyByVacancy_Id(Long vacancyId);
     boolean existsByIdAndStatus(Long vacancyId, VacancyStatus status);
-    List<UserVacancy> findByUser_UserIdAndVacancy_IdIn(Long userId, List<Long> vacancyIds);
 }
