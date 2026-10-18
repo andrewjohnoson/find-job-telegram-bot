@@ -5,8 +5,11 @@ import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandler;
 import com.zhevlakov.findjobtelegrambot.command.CommandHandlerName;
 import com.zhevlakov.findjobtelegrambot.user.query.UserQueryService;
+import com.zhevlakov.findjobtelegrambot.vacancy.Vacancy;
+import com.zhevlakov.findjobtelegrambot.vacancy.VacancyDto;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancyManager;
 import com.zhevlakov.findjobtelegrambot.vacancy.provider.TestProvider;
+import com.zhevlakov.findjobtelegrambot.vacancy.provider.arbeitnow.ArbeitnowVacancyProvider;
 import com.zhevlakov.findjobtelegrambot.vacancy.provider.remotive.RemotiveVacancyProvider;
 import com.zhevlakov.findjobtelegrambot.vacancy.ui.VacancyUiManager;
 import org.slf4j.Logger;
@@ -23,26 +26,32 @@ public class TestCommandHandler implements CommandHandler {
     private final RemotiveVacancyProvider remotiveVacancyProvider;
     private final VacancyUiManager uiManager;
     private final VacancyManager vacancyManager;
+    private final ArbeitnowVacancyProvider arbeitnowVacancyProvider;
 
     public TestCommandHandler(
             TestProvider testProvider,
             UserQueryService userQueryService,
             RemotiveVacancyProvider remotiveVacancyProvider,
             VacancyUiManager uiManager,
-            VacancyManager vacancyManager
+            VacancyManager vacancyManager,
+            ArbeitnowVacancyProvider arbeitnowVacancyProvider
     ) {
         this.testProvider = testProvider;
         this.userQueryService = userQueryService;
         this.remotiveVacancyProvider = remotiveVacancyProvider;
         this.uiManager = uiManager;
         this.vacancyManager = vacancyManager;
+        this.arbeitnowVacancyProvider = arbeitnowVacancyProvider;
     }
 
     @Override
     public List<BotResponse> handle(Message message) {
         var userId = message.chat().id();
+        List<VacancyDto> vacancyDtoList = arbeitnowVacancyProvider.fetch(userId);
+        log.info("Полученные отфильтрованные вакансии: {}", vacancyDtoList);
+        return BotResponse.asList(BotResponse.post(userId, "test"));
 //        vacancyManager.fetch(userId);
-        return uiManager.outputVacancies(userId);
+//        return uiManager.outputVacancies(userId);
     }
 
     @Override

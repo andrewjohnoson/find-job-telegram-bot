@@ -11,6 +11,7 @@ public record ArbeitnowJob(
     @JsonProperty("company_name") String companyName,
     Boolean remote,
     String location,
-    @JsonProperty("job_types") List<String> jobTypes
+    @JsonProperty("job_types") List<String> jobTypes,
+    List<String> tags
 ) {
 }

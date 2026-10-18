@@ -15,7 +15,16 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
+  ai:
+    embedding:
+      transformer:
+        cache:
+          directory: "./onnx-cache"
+        onnx:
+          model-uri: "https://huggingface.co/onnx-models/paraphrase-multilingual-MiniLM-L12-v2-onnx/resolve/main/model.onnx"
+          model-output-name: token_embeddings
+        tokenizer:
+          uri: "https://huggingface.co/onnx-models/paraphrase-multilingual-MiniLM-L12-v2-onnx/resolve/main/tokenizer.json?download=true"
 bot:
   api:
     token: ${BOT_TOKEN}
