@@ -47,14 +47,14 @@ public class VacancyUiManager {
                 });
     }
 
-    public List<BotResponse> outputFavouriteVacancies(Long userId, VacancySearchFilter filter) {
-        List<UserVacancy> userVacancyList =
-                userVacancyService.getUserVacanciesByStatus(filter, userId, VacancyStatus.FAVOURITE);
+    public List<BotResponse> outputFavouriteVacancies(Long userId) {
+        VacancySearchFilter filter = new VacancySearchFilter(
+                null,
+                null
+        );
 
-        log.info("Выводимые вакансии: {}", userVacancyList);
-
-        List<UserVacancy> vacancies =
-                userVacancyService.getUserVacanciesByStatus(filter, userId, VacancyStatus.FAVOURITE);
+        List<UserVacancy> vacancies = userVacancyService.getFavouriteUserVacancies(userId);
+        log.info("Выводимые вакансии: {}", vacancies);
 
         return responseFactory.buildResponse(
                 userId,

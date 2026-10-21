@@ -27,19 +27,19 @@ public class InFavouriteCallbackHandler implements CallbackHandler {
 
     @Override
     public List<BotResponse> handle(CallbackContent callbackContent) {
-        var chatId = callbackContent.chatId();
+        var userId = callbackContent.chatId();
         var vacancyId = callbackContent.additionalId();
 
         if (userVacancyService.hasStatus(vacancyId, VacancyStatus.FAVOURITE)) {
-            log.info("Пост в чате {} с вакансией {} уже в избранном", chatId, vacancyId);
-            var errorResponse = BotResponse.error(chatId, "Пост уже в избранном.");
+            log.warn("Пост в чате {} с вакансией {} уже в избранном", userId, vacancyId);
+            var errorResponse = BotResponse.error(userId, "Пост уже в избранном.");
             return BotResponse.asList(errorResponse);
         }
 
         userVacancyService.changeVacancyStatus(vacancyId, VacancyStatus.FAVOURITE);
 
-        log.info("Вакансия vacancyId = {} добавлено в избарнное пользователя chatId = {}", vacancyId, chatId);
-        var response = BotResponse.post(chatId, "Пост добавлен в избранное.", null, false, false, true);
+        log.info("Вакансия vacancyId = {} добавлено в избарнное пользователя userId = {}", vacancyId, userId);
+        var response = BotResponse.post(userId, "Пост добавлен в избранное.", null, false, false, true);
         return BotResponse.asList(response);
     }
 

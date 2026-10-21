@@ -16,43 +16,35 @@ import com.zhevlakov.findjobtelegrambot.vacancy.ui.VacancyResponseFactory;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancySearchFilter;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancyStatus;
 import com.zhevlakov.findjobtelegrambot.vacancy.ui.VacancyUiManager;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class FavouriteCommandHandler implements CommandHandler {
-    private final UserVacancyService userVacancyService;
-    private final VacancyResponseFactory vacancyResponseFactory;
-    private final CallbackMapper callbackMapper;
     private final VacancyUiManager vacancyUiManager;
     private final UserService userService;
+    private final UserVacancyService userVacancyService;
 
     public FavouriteCommandHandler(
-            UserVacancyService userVacancyService,
-            VacancyResponseFactory vacancyResponseFactory,
-            CallbackMapper callbackMapper,
             VacancyUiManager vacancyUiManager,
-            UserService userService
+            UserService userService,
+            UserVacancyService userVacancyService
     ) {
-        this.userVacancyService = userVacancyService;
-        this.vacancyResponseFactory = vacancyResponseFactory;
-        this.callbackMapper = callbackMapper;
         this.vacancyUiManager = vacancyUiManager;
         this.userService = userService;
+        this.userVacancyService = userVacancyService;
     }
 
     @Override
+    @Transactional
     public List<BotResponse> handle(Message message) {
-        VacancySearchFilter filter = new VacancySearchFilter(
-                null,
-                null
-        );
-
         var userId = message.chat().id();
         userService.changeUserState(userId, FsmStates.WATCH_FAVOURITE);
+        userVacancyService.makeVisible(userId, VacancyStatus.FAVOURITE);
 
-        return vacancyUiManager.outputFavouriteVacancies(userId, filter);
+        return vacancyUiManager.outputFavouriteVacancies(userId);
     }
 
     @Override

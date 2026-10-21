@@ -10,6 +10,7 @@ public enum CommandHandlerName {
     NEW_QUERY("Новый запрос"),
     CURRENT_QUERY("Показать текущий запрос"),
     FAVOURITE("Избранное"),
+    CONTINUE_SEARCH_VACANCIES("Продолжить поиск"),
     STOP_NOTIFICATIONS("Перестать искать");
 
     private final String commandName;

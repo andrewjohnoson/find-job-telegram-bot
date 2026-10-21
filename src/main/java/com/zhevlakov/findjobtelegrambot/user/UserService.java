@@ -49,7 +49,7 @@ public class UserService {
         return userRepository.updateState(userId, nextState) > 0;
     }
 
-    public boolean userHaveState(Long chatId, FsmStates state) {
+    public boolean hasState(Long chatId, FsmStates state) {
         var user = getUserById(chatId);
         return user.getState().equals(state);
     }

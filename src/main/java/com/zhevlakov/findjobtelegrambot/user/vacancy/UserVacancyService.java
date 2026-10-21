@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class UserVacancyService {
     private static final int PAGE_SIZE = 5;
     private static final int PAGE_NUM = 0;
+    private static final int VACANCY_AMOUNT_LIMIT = 5;
 
     private final UserVacancyRepository userVacancyRepository;
     private final UserService userService;
@@ -101,9 +102,23 @@ public class UserVacancyService {
     }
 
     public List<UserVacancy> getNewUserVacancies(Long userId) {
-        List<UserVacancy> newUserVacancies = userVacancyRepository.getNewUserVacancies(userId);
+        List<UserVacancy> newUserVacancies =
+                userVacancyRepository.getLimitedUserVacanciesByStatus(
+                        userId, VacancyStatus.FREE, VACANCY_AMOUNT_LIMIT);
         makeVacanciesViewed(newUserVacancies);
         return newUserVacancies;
+    }
+
+    public List<UserVacancy> getFavouriteUserVacancies(Long userId) {
+        List<UserVacancy> favouriteUserVacancies =
+                userVacancyRepository.getLimitedUserVacanciesByStatus(
+                        userId, VacancyStatus.FAVOURITE, VACANCY_AMOUNT_LIMIT);
+        makeVacanciesViewed(favouriteUserVacancies);
+        return favouriteUserVacancies;
+    }
+
+    public void makeVisible(Long userId, VacancyStatus status) {
+        userVacancyRepository.updateToNotViewed(userId, status);
     }
 
     private void makeVacanciesViewed(List<UserVacancy> userVacancyList) {

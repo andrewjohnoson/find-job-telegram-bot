@@ -37,18 +37,20 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
     );
 
     @Query(
-            """
-            select uv from UserVacancy uv
-            left join fetch uv.vacancy
-            where uv.isViewed = false
-                    and uv.user.userId = :user_id
-                    and uv.status = FREE
-            order by uv.vacancy.publicationDate desc
-            limit 5
-            """
+        """
+        select uv from UserVacancy uv
+        join fetch uv.vacancy
+        where uv.isViewed = false
+                and uv.user.userId = :user_id
+                and uv.status = :status
+        order by uv.vacancy.publicationDate desc
+        limit :limit
+        """
     )
-    List<UserVacancy> getNewUserVacancies(
-            @Param("user_id") Long userId
+    List<UserVacancy> getLimitedUserVacanciesByStatus(
+            @Param("user_id") Long userId,
+            @Param("status") VacancyStatus status,
+            @Param("limit") int limit
     );
 
     @Modifying(clearAutomatically = true)
@@ -72,6 +74,19 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
     List<UserVacancy> findUnviewedVacancies(
             @Param("userId") Long userId,
             @Param("vacancyIds") List<Long> vacancyIds
+    );
+
+    @Modifying(clearAutomatically = true)
+    @Query(
+        """
+        update UserVacancy uv
+        set uv.isViewed = false
+        where uv.user.userId = :userId
+            and uv.status = :status
+        """)
+    void updateToNotViewed(
+            @Param("userId") Long userId,
+            @Param("status") VacancyStatus status
     );
 
     UserVacancy getUserVacancyByVacancy_Id(Long vacancyId);

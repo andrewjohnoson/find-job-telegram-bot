@@ -32,7 +32,7 @@ public class KeyboardGenerator {
     public InlineKeyboardMarkup buildInlineKeyboard(List<KeyboardButtonContent> buttonList) {
         InlineKeyboardButton[] buttons = buttonList.stream()
                 .map(content -> {
-                    var newButton =  new InlineKeyboardButton(content.name())
+                    var newButton = new InlineKeyboardButton(content.name())
                             .callbackData(content.code());
                     if (content.url() != null) {
                         newButton.url(content.url());
@@ -51,7 +51,7 @@ public class KeyboardGenerator {
 
         InlineKeyboardButton[] buttons = finalButtons.stream()
                 .map(content -> {
-                    var newButton =  new InlineKeyboardButton(content.name())
+                    var newButton = new InlineKeyboardButton(content.name())
                             .callbackData(
                                     settings.inlineCode() + ":" + content.code()
                             );
