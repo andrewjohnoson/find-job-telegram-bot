@@ -31,6 +31,7 @@ public class InFavouriteCallbackHandler implements CallbackHandler {
         var vacancyId = callbackContent.additionalId();
 
         if (userVacancyService.hasStatus(vacancyId, VacancyStatus.FAVOURITE)) {
+            log.info("Пост в чате {} с вакансией {} уже в избранном", chatId, vacancyId);
             var errorResponse = BotResponse.error(chatId, "Пост уже в избранном.");
             return BotResponse.asList(errorResponse);
         }

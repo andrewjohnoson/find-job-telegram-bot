@@ -11,7 +11,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -22,12 +21,14 @@ public class ArbeitnowVacancyProvider implements VacancyProvider {
     private final Logger log = LoggerFactory.getLogger(ArbeitnowVacancyProvider.class);
     private final RestClient restClient;
     private final VacancyFilter vacancyFilter;
-    private final static String WEBSITE_NAME = "Arbeitnow";
+    private final ArbeitnowMapper arbeitnowMapper;
 
     public ArbeitnowVacancyProvider(
-            VacancyFilter vacancyFilter
+            VacancyFilter vacancyFilter,
+            ArbeitnowMapper arbeitnowMapper
     ) {
         this.vacancyFilter = vacancyFilter;
+        this.arbeitnowMapper = arbeitnowMapper;
         this.restClient = RestClient.builder()
                 .baseUrl("https://www.arbeitnow.com/api")
                 .defaultHeader("User-Agent", "FindJobTelegramBot/1.0")
@@ -51,7 +52,7 @@ public class ArbeitnowVacancyProvider implements VacancyProvider {
                 .filter(Objects::nonNull)
                 .filter(response -> response.jobs() != null)
                 .flatMap(response -> response.jobs().stream())
-                .map(this::toDto)
+                .map(arbeitnowMapper::toDto)
                 .toList();
 
         log.info("Вакансии с Arbeitnow: {}", vacancyDtoList);
@@ -94,17 +95,5 @@ public class ArbeitnowVacancyProvider implements VacancyProvider {
             log.error("Неизвестная ошибка при загрузке страницы {}", page, e);
             return null;
         }
-    }
-
-    private VacancyDto toDto(ArbeitnowJob job) {
-        return new VacancyDto(
-                job.title(),
-                job.url(),
-                job.companyName(),
-                job.description(),
-                null,
-                WEBSITE_NAME,
-                LocalDateTime.now()
-        );
     }
 }

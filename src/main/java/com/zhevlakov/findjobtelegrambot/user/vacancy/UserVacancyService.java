@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserVacancyService {
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 5;
     private static final int PAGE_NUM = 0;
 
     private final UserVacancyRepository userVacancyRepository;
@@ -63,15 +63,6 @@ public class UserVacancyService {
         var vacancy = userVacancyRepository.getUserVacancyByVacancy_Id(vacancyId);
         vacancy.setStatus(status);
         return vacancy;
-    }
-
-    private Pageable getPager(VacancySearchFilter filter) {
-        int pageSize = filter.pageSize() != null ? filter.pageSize() : PAGE_SIZE;
-        int pageNum = filter.pageNum() != null ? filter.pageNum() : PAGE_NUM;
-
-        return Pageable
-                .ofSize(pageSize)
-                .withPage(pageNum);
     }
 
     public void linkVacancies(Long userId, List<Vacancy> vacancies) {
@@ -123,5 +114,14 @@ public class UserVacancyService {
         userVacancyRepository.markAsViewed(userVacancyIds);
 
         log.info("Вакансии, которые были помечены прочитанными: {}", userVacancyList);
+    }
+
+    private Pageable getPager(VacancySearchFilter filter) {
+        int pageSize = filter.pageSize() != null ? filter.pageSize() : PAGE_SIZE;
+        int pageNum = filter.pageNum() != null ? filter.pageNum() : PAGE_NUM;
+
+        return Pageable
+                .ofSize(pageSize)
+                .withPage(pageNum);
     }
 }

@@ -2,6 +2,7 @@ package com.zhevlakov.findjobtelegrambot.fsm;
 
 public enum FsmStates {
     FREE,
+    WATCH_FAVOURITE,
     ASK_POSITION,
     ASK_EXPERIENCE,
     ASK_CITY,

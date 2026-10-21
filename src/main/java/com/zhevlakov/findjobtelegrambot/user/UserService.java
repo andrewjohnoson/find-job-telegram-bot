@@ -45,6 +45,10 @@ public class UserService {
         return updateUser(user);
     }
 
+    public boolean changeUserState(Long userId, FsmStates nextState) {
+        return userRepository.updateState(userId, nextState) > 0;
+    }
+
     public boolean userHaveState(Long chatId, FsmStates state) {
         var user = getUserById(chatId);
         return user.getState().equals(state);
