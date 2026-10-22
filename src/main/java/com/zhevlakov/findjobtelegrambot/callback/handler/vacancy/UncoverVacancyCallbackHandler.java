@@ -25,13 +25,13 @@ public class UncoverVacancyCallbackHandler implements CallbackHandler {
 
     @Override
     public List<BotResponse> handle(CallbackContent callbackContent) {
-        var chatId = callbackContent.chatId();
+        var userId = callbackContent.chatId();
         var vacancyId = callbackContent.additionalId();
 
-        userVacancyService.changeVacancyStatus(vacancyId, VacancyStatus.FREE);
+        userVacancyService.changeVacancyStatus(userId, vacancyId, VacancyStatus.FREE);
 
-        log.info("Вакансия vacancyId = {} показана для пользователя chatId = {}", vacancyId, chatId);
-        var response = BotResponse.post(chatId, "Пост вновь показывается.", null, false, false, true);
+        log.info("Вакансия vacancyId = {} показана для пользователя chatId = {}", vacancyId, userId);
+        var response = BotResponse.post(userId, "Пост вновь показывается.", null, false, false, true);
         return BotResponse.asList(response);
     }
 

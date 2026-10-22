@@ -50,7 +50,6 @@ public class UserService {
     }
 
     public boolean hasState(Long chatId, FsmStates state) {
-        var user = getUserById(chatId);
-        return user.getState().equals(state);
+        return userRepository.existsByUserIdAndState(chatId, state);
     }
 }

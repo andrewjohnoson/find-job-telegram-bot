@@ -23,13 +23,13 @@ public class HideVacancyCallbackHandler implements CallbackHandler {
 
     @Override
     public List<BotResponse> handle(CallbackContent callbackContent) {
-        var chatId = callbackContent.chatId();
+        var userId = callbackContent.chatId();
         var vacancyId = callbackContent.additionalId();
 
-        userVacancyService.changeVacancyStatus(vacancyId, VacancyStatus.HIDDEN);
+        userVacancyService.changeVacancyStatus(userId, vacancyId, VacancyStatus.HIDDEN);
 
-        log.info("Вакансия vacancyId = {} спрятана для пользователя chatId = {}", vacancyId, chatId);
-        var response = BotResponse.post(chatId, "Пост был скрыт.", null, false, false, true);
+        log.info("Вакансия vacancyId = {} спрятана для пользователя chatId = {}", vacancyId, userId);
+        var response = BotResponse.post(userId, "Пост был скрыт.", null, false, false, true);
         return BotResponse.asList(response);
     }
 

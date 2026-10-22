@@ -30,7 +30,8 @@ public class SearchVacanciesCommandHandler implements CommandHandler {
 
         userService.changeUserState(userId, FsmStates.FREE);
 
-        return vacancyUiManager.outputVacancies(userId);
+//        return vacancyUiManager.outputVacancies(userId);
+        return BotResponse.asList(BotResponse.post(userId, "Изменено."));
     }
 
     @Override

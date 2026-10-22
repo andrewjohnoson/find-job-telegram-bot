@@ -5,6 +5,7 @@ import com.zhevlakov.findjobtelegrambot.user.UserService;
 import com.zhevlakov.findjobtelegrambot.vacancy.Vacancy;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancySearchFilter;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancyStatus;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -43,8 +44,8 @@ public class UserVacancyService {
         return userVacancyRepository.findAllVisibleByUser(userId, VacancyStatus.HIDDEN, pager);
     }
 
-    public boolean hasStatus(Long vacancyId, VacancyStatus status) {
-        return userVacancyRepository.existsByIdAndStatus(vacancyId, status);
+    public boolean hasStatus(Long userId, Long vacancyId, VacancyStatus status) {
+        return userVacancyRepository.existsByUser_UserIdAndIdAndStatus(userId, vacancyId, status);
     }
 
     public List<UserVacancy> getUserVacanciesByStatus(
@@ -57,15 +58,15 @@ public class UserVacancyService {
         return userVacancyRepository.findAllByUserAndStatus(userId, status, pager);
     }
 
-    public UserVacancy changeVacancyStatus(
+    public void changeVacancyStatus(
+            Long userId,
             Long vacancyId,
             VacancyStatus status
     ) {
-        var vacancy = userVacancyRepository.getUserVacancyByVacancy_Id(vacancyId);
-        vacancy.setStatus(status);
-        return vacancy;
+        userVacancyRepository.changeUserVacancyStatus(userId, vacancyId, status);
     }
 
+    @Transactional
     public void linkVacancies(Long userId, List<Vacancy> vacancies) {
         List<Long> vacancyIds = vacancies.stream().map(Vacancy::getId).toList();
 
@@ -101,6 +102,7 @@ public class UserVacancyService {
         }
     }
 
+    @Transactional
     public List<UserVacancy> getNewUserVacancies(Long userId) {
         List<UserVacancy> newUserVacancies =
                 userVacancyRepository.getLimitedUserVacanciesByStatus(
@@ -109,6 +111,7 @@ public class UserVacancyService {
         return newUserVacancies;
     }
 
+    @Transactional
     public List<UserVacancy> getFavouriteUserVacancies(Long userId) {
         List<UserVacancy> favouriteUserVacancies =
                 userVacancyRepository.getLimitedUserVacanciesByStatus(

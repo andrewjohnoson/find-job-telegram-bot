@@ -10,12 +10,14 @@ import org.springframework.data.repository.query.Param;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByUserIdAndState(Long chatId, FsmStates state);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     @Query("""
         update UserEntity u
         set u.state = :state
         where u.userId = :chatId
     """)
-    int updateState(@Param("chatId") Long chatId, @Param("state") FsmStates state);
+    int updateState(
+            @Param("chatId") Long chatId,
+            @Param("state") FsmStates state);
 }

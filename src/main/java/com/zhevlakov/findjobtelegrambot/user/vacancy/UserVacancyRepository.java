@@ -1,6 +1,7 @@
 package com.zhevlakov.findjobtelegrambot.user.vacancy;
 
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancyStatus;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -53,6 +54,7 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
             @Param("limit") int limit
     );
 
+    @Transactional
     @Modifying(clearAutomatically = true)
     @Query(
         """
@@ -76,6 +78,7 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
             @Param("vacancyIds") List<Long> vacancyIds
     );
 
+    @Transactional
     @Modifying(clearAutomatically = true)
     @Query(
         """
@@ -89,6 +92,22 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
             @Param("status") VacancyStatus status
     );
 
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(
+        """
+        update UserVacancy uv
+        set uv.status = :status
+        where uv.user.userId = :userId
+                and uv.vacancy.id = :vacancyId
+        """
+    )
+    int changeUserVacancyStatus(
+            @Param("userId") Long userId,
+            @Param("vacancyId") Long vacancyId,
+            @Param("status") VacancyStatus status
+    );
+
     UserVacancy getUserVacancyByVacancy_Id(Long vacancyId);
-    boolean existsByIdAndStatus(Long vacancyId, VacancyStatus status);
+    boolean existsByUser_UserIdAndIdAndStatus(Long userId, Long vacancyId, VacancyStatus status);
 }

@@ -48,13 +48,13 @@ public class VacancyUiManager {
     }
 
     public List<BotResponse> outputFavouriteVacancies(Long userId) {
-        VacancySearchFilter filter = new VacancySearchFilter(
-                null,
-                null
-        );
-
         List<UserVacancy> vacancies = userVacancyService.getFavouriteUserVacancies(userId);
         log.info("Выводимые вакансии: {}", vacancies);
+
+        if (vacancies == null || vacancies.isEmpty()) {
+            log.info("Нет избранных вакансий у пользователя id={}", userId);
+            return BotResponse.asList(BotResponse.post(userId, "У вас нет избранных вакансий."));
+        }
 
         return responseFactory.buildResponse(
                 userId,

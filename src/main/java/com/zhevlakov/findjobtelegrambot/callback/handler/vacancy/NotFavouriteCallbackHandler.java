@@ -25,13 +25,13 @@ public class NotFavouriteCallbackHandler implements CallbackHandler {
 
     @Override
     public List<BotResponse> handle(CallbackContent callbackContent) {
-        var chatId = callbackContent.chatId();
+        var userId = callbackContent.chatId();
         var vacancyId = callbackContent.additionalId();
 
-        userVacancyService.changeVacancyStatus(vacancyId, VacancyStatus.FREE);
+        userVacancyService.changeVacancyStatus(userId, vacancyId, VacancyStatus.FREE);
 
-        log.info("Вакансия vacancyId = {} не в избранном для пользователя chatId = {}", vacancyId, chatId);
-        var response = BotResponse.post(chatId, "Пост не в избранном.", null, false, false, true);
+        log.info("Вакансия vacancyId = {} не в избранном для пользователя userId = {}", vacancyId, userId);
+        var response = BotResponse.post(userId, "Пост не в избранном.", null, false, false, true);
         return BotResponse.asList(response);
     }
 
