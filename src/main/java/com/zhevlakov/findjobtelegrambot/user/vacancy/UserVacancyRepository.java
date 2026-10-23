@@ -97,6 +97,21 @@ public interface UserVacancyRepository extends JpaRepository<UserVacancy, Long> 
     @Query(
         """
         update UserVacancy uv
+        set uv.isViewed = false
+        where uv.user.userId = :userId
+            and uv.vacancy.id = :vacancyId
+        """
+    )
+    void updateToNotViewed(
+            @Param("userId") Long userId,
+            @Param("vacancyId") Long vacancyId
+    );
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(
+        """
+        update UserVacancy uv
         set uv.status = :status
         where uv.user.userId = :userId
                 and uv.vacancy.id = :vacancyId

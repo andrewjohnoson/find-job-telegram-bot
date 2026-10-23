@@ -7,7 +7,6 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.zhevlakov.findjobtelegrambot.callback.CallbackContent;
 import com.zhevlakov.findjobtelegrambot.callback.CallbackDispatcher;
 import com.zhevlakov.findjobtelegrambot.command.CommandDispatcher;
 import com.zhevlakov.findjobtelegrambot.fsm.FsmDispatcher;
@@ -45,31 +44,44 @@ public class UpdateHandler {
     }
 
     public void handleUpdate(Update update) {
+        var chatId = getChatId(update);
+
         try {
             var botResponseList = process(update);
             for (BotResponse botResponse : botResponseList) {
                 if (botResponse.updatePrevKeyboard()) {
                     continue;
                 }
-
                 var request = responseMapper.toRequest(botResponse);
                 senderService.sendMessage(request);
             }
+        } catch (NullPointerException e) {
+            if (update.inlineQuery() != null) {
+                return;
+            }
 
+            log.info("В одном из обработчиков возникло исключение NullPointerException. ", e);
+            sendUserErrorMessage(chatId);
         } catch (Exception e) {
+            if (update.inlineQuery() != null) {
+                return;
+            }
+
             log.error("Во время работы произошла ошибка", e);
-            sendUserErrorMessage(update.message().chat().id());
+            sendUserErrorMessage(chatId);
         }
     }
 
     public List<BotResponse> process(Update update) {
         if (update.callbackQuery() != null) {
             var callback = update.callbackQuery();
-            var response = callbackDispatcher.processCallback(callback);
-
-            updatingOrRemovingKeyboard(response, callback);
-
-            return response;
+            try {
+                var response = callbackDispatcher.processCallback(callback);
+                updatingOrRemovingKeyboard(response, callback);
+                return response;
+            } catch (NullPointerException e) {
+                throw new NullPointerException();
+            }
         }
 
         if (update.message() != null) {
@@ -77,7 +89,11 @@ public class UpdateHandler {
             var chatId = message.chat().id();
 
             if (commandDispatcher.isCommand(message)) {
-                return commandDispatcher.processCommand(message);
+                try {
+                    return commandDispatcher.processCommand(message);
+                } catch (NullPointerException e) {
+                    throw new NullPointerException();
+                }
             }
 
             if (!userService.isUserFree(chatId)) {
@@ -147,5 +163,21 @@ public class UpdateHandler {
             var deleteMessage = new DeleteMessage(chatId, messageId);
             senderService.removeMessage(deleteMessage);
         }
+    }
+
+    private Long getChatId(Update update) {
+        if (update.message() != null && update.message().chat() != null) {
+            return update.message().chat().id();
+        }
+
+        if (update.callbackQuery() != null && update.callbackQuery().from() != null) {
+            return update.callbackQuery().from().id();
+        }
+
+        if (update.editedMessage() != null && update.editedMessage().chat() != null) {
+            return update.editedMessage().chat().id();
+        }
+
+        return null;
     }
 }

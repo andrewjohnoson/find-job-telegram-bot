@@ -35,7 +35,8 @@ public class CallbackDispatcher {
         this.callbackMapper = callbackMapper;
     }
 
-    public List<BotResponse> processCallback(CallbackQuery callback) {
+    public List<BotResponse> processCallback(CallbackQuery callback)
+            throws NullPointerException {
         var callbackContent = callbackMapper.toContent(callback);
         log.info("processCallback, {}", callbackContent);
 

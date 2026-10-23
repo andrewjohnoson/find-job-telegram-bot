@@ -32,7 +32,8 @@ public class CommandDispatcher {
         this.userService = userService;
     }
 
-    public List<BotResponse> processCommand(Message message) {
+    public List<BotResponse> processCommand(Message message)
+            throws NullPointerException {
         var chatId = message.chat().id();
         var commandValue = message.text();
 

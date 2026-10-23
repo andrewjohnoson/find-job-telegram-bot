@@ -2,7 +2,6 @@ package com.zhevlakov.findjobtelegrambot.vacancy;
 
 import com.zhevlakov.findjobtelegrambot.vacancy.provider.remotive.RemotiveVacancyProvider;
 import jakarta.transaction.Transactional;
-import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

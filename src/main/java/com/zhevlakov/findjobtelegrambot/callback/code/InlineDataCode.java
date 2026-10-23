@@ -5,6 +5,7 @@ public enum InlineDataCode {
     ASK_EXPERIENCE("exp", null),
     ASK_WORK_FORMAT("wft", null),
     NEXT("next", null),
+    CONTINUE_VACANCY_SEARCHING("continueSearch", "Продолжить поиск"),
 
     // vacancy buttons
     VACANCY_CLICK("vac_cl", "Перейти"),

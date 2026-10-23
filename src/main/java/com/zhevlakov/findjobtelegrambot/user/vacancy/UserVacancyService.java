@@ -124,6 +124,10 @@ public class UserVacancyService {
         userVacancyRepository.updateToNotViewed(userId, status);
     }
 
+    public void makeVisible(Long userId, Long vacancyId) {
+        userVacancyRepository.updateToNotViewed(userId, vacancyId);
+    }
+
     private void makeVacanciesViewed(List<UserVacancy> userVacancyList) {
         List<Long> userVacancyIds = userVacancyList.stream()
                 .map(UserVacancy::getId)

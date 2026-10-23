@@ -61,4 +61,15 @@ public class VacancyResponseFactory {
 
         return keyboardGenerator.buildInlineKeyboard(List.of(showMoreButton));
     }
+
+    public Keyboard generateContinueVacancySearchingKeyboard() {
+        List<KeyboardButtonContent> button = List.of(
+                KeyboardButtonContent.standardButton(
+                        InlineDataCode.CONTINUE_VACANCY_SEARCHING.buttonText(),
+                        InlineDataCode.CONTINUE_VACANCY_SEARCHING.inlineButtonCode()
+                )
+        );
+
+        return keyboardGenerator.buildInlineKeyboard(button);
+    }
 }
