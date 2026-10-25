@@ -26,7 +26,14 @@ public class HideVacancyCallbackHandler implements CallbackHandler {
         var userId = callbackContent.chatId();
         var vacancyId = callbackContent.additionalId();
 
-        userVacancyService.changeVacancyStatus(userId, vacancyId, VacancyStatus.HIDDEN);
+        // Проверка: скрыта ли вакансия, которую хотят скрыть
+        if (userVacancyService.hasStatus(userId, vacancyId, VacancyStatus.HIDDEN)) {
+            log.warn("Пост в чате {} с вакансией {} уже скрыт.", userId, vacancyId);
+            var errorResponse = BotResponse.error(userId, "Пост уже скрыт.");
+            return BotResponse.asList(errorResponse);
+        }
+
+        userVacancyService.changeStatusAndMakeVisible(userId, vacancyId, VacancyStatus.HIDDEN);
 
         log.info("Вакансия vacancyId = {} спрятана для пользователя chatId = {}", vacancyId, userId);
         var response = BotResponse.post(userId, "Пост был скрыт.", null, false, false, true);

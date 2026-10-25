@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.model.request.Keyboard;
 import com.zhevlakov.findjobtelegrambot.bot.BotResponse;
 import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
 import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardButtonContent;
-import com.zhevlakov.findjobtelegrambot.keyboard.KeyboardGenerator;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancy;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancyService;
 import jakarta.transaction.Transactional;
@@ -19,23 +18,27 @@ public class VacancyUiManager {
     private final VacancyResponseFactory responseFactory;
     private final UserVacancyService userVacancyService;
     private final Logger log = LoggerFactory.getLogger(VacancyUiManager.class);
-    private final KeyboardGenerator keyboardGenerator;
 
     public VacancyUiManager(
             VacancyResponseFactory responseFactory,
-            UserVacancyService userVacancyService,
-            KeyboardGenerator keyboardGenerator
+            UserVacancyService userVacancyService
     ) {
         this.responseFactory = responseFactory;
         this.userVacancyService = userVacancyService;
-        this.keyboardGenerator = keyboardGenerator;
     }
 
     @Transactional
     public List<BotResponse> outputVacancies(Long userId) {
         List<UserVacancy> userVacancyList = userVacancyService.getNewUserVacancies(userId);
-
         log.info("Выводимые вакансии: {}", userVacancyList);
+
+        // Проверка: есть есть ли в списке вакансии
+        if (userVacancyList == null || userVacancyList.isEmpty()) {
+            log.info("Все вакансии уже показаны для пользователя id={}.", userId);
+            return BotResponse.asList(BotResponse.post(userId, "Все вакансии уже показаны."));
+        }
+
+        // Добавляются кнопки "В избранное" и "Скрыть"
         return responseFactory.buildResponse(userId, userVacancyList,
                 vacancy -> {
                     var vacancyId = vacancy.getVacancy().getId();
@@ -50,10 +53,12 @@ public class VacancyUiManager {
                 });
     }
 
+    @Transactional
     public List<BotResponse> outputFavouriteVacancies(Long userId) {
         List<UserVacancy> vacancies = userVacancyService.getFavouriteUserVacancies(userId);
         log.info("Выводимые избранные вакансии: {}", vacancies);
 
+        // Проверка: есть ли избранные вакансии
         if (vacancies == null || vacancies.isEmpty()) {
             log.info("Нет избранных вакансий у пользователя id={}", userId);
 
@@ -61,6 +66,7 @@ public class VacancyUiManager {
             return BotResponse.asList(BotResponse.post(userId, "У вас нет избранных вакансий.", keyboard));
         }
 
+        // Генерируются вакансии с кнопкой "Убрать из избранных"
         return responseFactory.buildResponse(
                 userId,
                 vacancies,

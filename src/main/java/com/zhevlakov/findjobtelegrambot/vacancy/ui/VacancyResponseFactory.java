@@ -23,6 +23,21 @@ public class VacancyResponseFactory {
         this.keyboardGenerator = keyboardGenerator;
     }
 
+    /**
+     *
+     * Функция возвращает ответ тг-бота с вакансиями.
+     * <br>
+     * Здесь возвращаются объект BotResponse, где описана вакансия и
+     * прикреплена клавиатура с кнопкой "Перейти" (переход по ссылке на вакансию).
+     * Также можно добавить дополнительные кнопки с помощью {@code actionButtinsProvider}.
+     *
+     * @param userId Идентификатор пользователя
+     * @param vacancies Список вакансий пользователя
+     * @param actionButtonsProvider Лямбда-функция, которая позволяет
+     *                              добавить дополнительные кнопки, если необходимо.
+     * @return BotResponse
+     */
+
     public List<BotResponse> buildResponse(
             Long userId,
             List<UserVacancy> vacancies,
@@ -40,7 +55,10 @@ public class VacancyResponseFactory {
 
                     List<KeyboardButtonContent> buttons = new ArrayList<>();
                     buttons.add(urlButton);
-                    buttons.addAll(actionButtonsProvider.apply(vacancy));
+
+                    if (actionButtonsProvider != null) {
+                        buttons.addAll(actionButtonsProvider.apply(vacancy));
+                    }
 
                     Keyboard keyboard = keyboardGenerator.buildInlineKeyboard(buttons);
 

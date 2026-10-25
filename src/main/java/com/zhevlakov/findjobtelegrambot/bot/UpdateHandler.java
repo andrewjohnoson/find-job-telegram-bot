@@ -75,13 +75,9 @@ public class UpdateHandler {
     public List<BotResponse> process(Update update) {
         if (update.callbackQuery() != null) {
             var callback = update.callbackQuery();
-            try {
-                var response = callbackDispatcher.processCallback(callback);
-                updatingOrRemovingKeyboard(response, callback);
-                return response;
-            } catch (NullPointerException e) {
-                throw new NullPointerException();
-            }
+            var response = callbackDispatcher.processCallback(callback);
+            updatingOrRemovingKeyboard(response, callback);
+            return response;
         }
 
         if (update.message() != null) {
@@ -89,11 +85,7 @@ public class UpdateHandler {
             var chatId = message.chat().id();
 
             if (commandDispatcher.isCommand(message)) {
-                try {
-                    return commandDispatcher.processCommand(message);
-                } catch (NullPointerException e) {
-                    throw new NullPointerException();
-                }
+                return commandDispatcher.processCommand(message);
             }
 
             if (!userService.isUserFree(chatId)) {

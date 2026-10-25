@@ -1,54 +1,60 @@
 package com.zhevlakov.findjobtelegrambot.vacancy;
 
-import com.zhevlakov.findjobtelegrambot.vacancy.provider.remotive.RemotiveVacancyProvider;
-import jakarta.transaction.Transactional;
+import com.zhevlakov.findjobtelegrambot.vacancy.provider.VacancyProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 @Component
 public class VacancyManager {
     private final Logger log = LoggerFactory.getLogger(VacancyManager.class);
 
-    // Поставщики вакансий
-    private final RemotiveVacancyProvider remotiveVacancyProvider;
+    private final Semaphore rateLimiter = new Semaphore(30);
 
     // Сервисы
-    private final VacancyService vacancyService;
+    private final VacancySyncService vacancySyncService;
 
-    private final VacancyFormatter vacancyFormatter;
     private final VacancyMapper vacancyMapper;
+    private final List<VacancyProvider> providers;
 
     public VacancyManager(
-            RemotiveVacancyProvider remotiveVacancyProvider,
-            VacancyService vacancyService,
-            VacancyFormatter vacancyFormatter,
-            VacancyMapper vacancyMapper
+            VacancySyncService vacancySyncService,
+            VacancyMapper vacancyMapper,
+            List<VacancyProvider> providers
     ) {
-        this.remotiveVacancyProvider = remotiveVacancyProvider;
-        this.vacancyService = vacancyService;
-        this.vacancyFormatter = vacancyFormatter;
+        this.vacancySyncService = vacancySyncService;
         this.vacancyMapper = vacancyMapper;
+        this.providers = providers;
     }
 
-    @Transactional
     public void fetch(Long userId) {
-        List<VacancyDto> vacancyDtoList = new ArrayList<>();
+        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (var provider : providers) {
+                executor.submit(() -> {
+                    try {
+                        rateLimiter.acquire();
+                        try {
+                            List<VacancyDto> vacancyDtoList = provider.fetch(userId);
+                            if (!vacancyDtoList.isEmpty()) {
+                                List<Vacancy> vacancies = vacancyMapper.toDomain(vacancyDtoList);
+                                vacancySyncService.syncWithDatabase(userId, vacancies);
+                            }
+                        } finally {
+                            rateLimiter.release();
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    } catch (Exception e) {
+                        log.error("Ошибка при сборе вакансий для userId={}", userId, e);
+                    }
+                });
+            }
 
-        List<VacancyDto> remotiveList = remotiveVacancyProvider.fetch(userId);
-        vacancyDtoList.addAll(remotiveList);
-
-        List<Vacancy> vacancies = vacancyMapper.toDomain(vacancyDtoList);
-
-        syncWithDatabase(userId, vacancies);
-    }
-
-    @Transactional
-    protected void syncWithDatabase(Long userId, List<Vacancy> vacancyDtoList) {
-        vacancyService.saveNewVacancies(userId, vacancyDtoList);
-        log.info("Вакансии синхронизованы.");
+        }
     }
 }

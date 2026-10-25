@@ -6,7 +6,6 @@ import com.zhevlakov.findjobtelegrambot.callback.CallbackHandler;
 import com.zhevlakov.findjobtelegrambot.callback.code.InlineDataCode;
 import com.zhevlakov.findjobtelegrambot.user.vacancy.UserVacancyService;
 import com.zhevlakov.findjobtelegrambot.vacancy.VacancyStatus;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,20 +25,19 @@ public class InFavouriteCallbackHandler implements CallbackHandler {
         this.userVacancyService = userVacancyService;
     }
 
-    @Transactional
     @Override
     public List<BotResponse> handle(CallbackContent callbackContent) {
         var userId = callbackContent.chatId();
         var vacancyId = callbackContent.additionalId();
 
+        // Проверка: находится ли в избранном вакансия, которую хотят добавить в избранное
         if (userVacancyService.hasStatus(userId, vacancyId, VacancyStatus.FAVOURITE)) {
-            log.warn("Пост в чате {} с вакансией {} уже в избранном", userId, vacancyId);
+            log.warn("Пост в чате {} с вакансией {} уже в избранном.", userId, vacancyId);
             var errorResponse = BotResponse.error(userId, "Пост уже в избранном.");
             return BotResponse.asList(errorResponse);
         }
 
-        userVacancyService.changeVacancyStatus(userId, vacancyId, VacancyStatus.FAVOURITE);
-        userVacancyService.makeVisible(userId, vacancyId);
+        userVacancyService.changeStatusAndMakeVisible(userId, vacancyId, VacancyStatus.FAVOURITE);
 
         log.info("Вакансия vacancyId = {} добавлено в избарнное пользователя userId = {}", vacancyId, userId);
         var response = BotResponse.post(userId, "Пост добавлен в избранное.", null, false, false, true);
